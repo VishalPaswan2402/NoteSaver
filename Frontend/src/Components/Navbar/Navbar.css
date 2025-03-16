@@ -2,3 +2,8 @@
     color: rgb(255, 242, 3);
     font-weight: 600;
 }
+.logo-style{
+    height: 30px;
+    width: 30px;
+    background-size: contain;
+}
