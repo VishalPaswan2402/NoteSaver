@@ -15,11 +15,11 @@ function App() {
       <div className='pt-14'></div>
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/add-new" element={<AddNew heading="Add Your New Note" btnName="Save Note" />}></Route>
-        <Route path="/view-page" element={<ViewPage />}></Route>
-        <Route path="/edit-page" element={<EditPage />}></Route>
+        <Route path="/v1/add-new" element={<AddNew heading="Add Your New Note" btnName="Save Note" edit={true} />}></Route>
+        <Route path="/v1/view-note/:id" element={<ViewPage />}></Route>
+        <Route path="/v1/edit-page" element={<EditPage />}></Route>
       </Routes>
-      <Footer/>
+      <Footer />
     </>
   )
 }
