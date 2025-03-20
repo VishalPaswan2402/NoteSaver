@@ -1,5 +1,5 @@
 import React from 'react'
-import AddNew from '../AddNew/AddNew'
+import AddNew from '../../Components/AddNew/AddNew'
 
 export default function EditPage(props) {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import AddNew from '../AddNew/AddNew'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import AddNew from '../../Components/AddNew/AddNew';
 
 export default function ViewPage(props) {
     const backendUrl = "http://localhost:8080";
@@ -11,7 +11,7 @@ export default function ViewPage(props) {
     useEffect(() => {
         const loadView = async () => {
             try {
-                const response = await axios.get(`${backendUrl}/v1/view_note/${viewId.id}`);
+                const response = await axios.get(`${backendUrl}/v1/view-note/${viewId.id}`);
                 if (response.data) {
                     setViewNote(response.data);
                     console.log("response :", response.data);

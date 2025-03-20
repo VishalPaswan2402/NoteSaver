@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import saveNote from "./NoteSchema.js";
 const Schema = mongoose.Schema;
 const NoteUserSchema = new Schema({
     name: {
@@ -14,7 +15,15 @@ const NoteUserSchema = new Schema({
         type: String,
         unique: true,
         required: true
-    }
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    allNotes:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:saveNote
+    }]
 })
 
 const noteUser = mongoose.model("noteUser", NoteUserSchema);

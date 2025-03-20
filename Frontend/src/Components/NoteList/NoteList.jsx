@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
 
 export default function NoteList(props) {
-    const navigate = useNavigate();
 
     return (
         <>
-            <div className='bg-blue-100 border-1 flex max-w-2xl m-auto mt-3 p-2 hover:bg-blue-200 rounded-lg'>
-                <div className='flex w-full   cursor-pointer'>
+            <div className='bg-blue-100 border-1 flex min-w-2xl m-auto mt-3 p-2 hover:bg-blue-200 rounded-lg'>
+                <div className='flex w-full  cursor-pointer'>
                     <div className=' w-7/1 p-1'>
                         <p className='font-semibold text-rose-800'>{props.name}</p>
                         <p className='text-gray-600'>{props.desc}</p>
