@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import saveNote from "./NoteSchema.js";
 const Schema = mongoose.Schema;
 const NoteUserSchema = new Schema({
-    name: {
+    fullname: {
         type: String,
         required: true
     },
