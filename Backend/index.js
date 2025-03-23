@@ -17,7 +17,7 @@ const port = process.env.PORT || 8080;
 const db_url = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/notesaver";
 
 const corsOption = {
-    origin: process.env.FRONTEND_URL || "http://localhost:5175",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true
 }
 
@@ -50,48 +50,58 @@ const allNotesMiddleware = async (req, res, next) => {
 app.post("/v1/new-note/:id", async (req, res) => {
     console.log("Adding new note...");
     const { id } = req.params;
-    let { title, description } = req.body;
-    if (title == "" || description == "") {
-        return res.status(400).json({ message: "Data is missing." });
+    console.log(id);
+    const { ...data } = req.body;
+    console.log(data);
+    if (data.title == "" || data.description == "") {
+        return res.status(400).json({ message: "Data is missing.", success: false });
     } else {
         try {
-            console.log("title", title);
-            console.log("desc", description);
-            const newNote = new saveNote({ userId: id, title, description });
+            // console.log("title", title);
+            // console.log("desc", description);
+            const newNote = new saveNote({ userId: id, title: data.title, description: data.description });
             const saved = await newNote.save();
             console.log(saved);
             const creator = await noteUser.findById(id)
             creator.allNotes.push(saved._id);
             await creator.save();
-            return res.status(200).json({ message: "Note saved successfully", creator });
+            return res.status(200).json({ message: "Note saved successfully", creator: creator, success: true, navigateUrl: `v1/all-notes/${id}` });
         }
         catch (error) {
             console.log(error);
-            return res.status(500).json({ message: "Internal server error" });
+            return res.status(500).json({ message: "Internal server error", success: false });
         }
     }
+})
 
+
+// add new note
+app.post("/v1/edit-note/:id", async (req, res) => {
+    console.log("Edit your note...");
+    const { id } = req.params;
+    console.log(id);
+    const { ...data } = req.body;
+    console.log(data);
 })
 
 
 // show all notes
-app.get("/v1/all-notes", allNotesMiddleware, async (req, res) => {
+app.get("/v1/all-notes/:id", async (req, res) => {
     console.log("All notes...");
-    console.log("All notes...");
-    return;
-    // try {
-    //     const notes = await saveNote.find({ userId: id });
-    //     if (notes) {
-    //         console.log(notes);
-    //         return res.status(200).json({ message: "All notes", notes });
-    //     } else {
-    //         return res.status(200).json({ message: "Oops! You haven’t added any notes yet." })
-    //     }
-    // }
-    // catch (error) {
-    //     console.log(error);
-    //     res.status(500).json({ message: "Internal server error." });
-    // }
+    const { id } = req.params;
+    try {
+        const notes = await saveNote.find({ userId: id });
+        if (notes) {
+            // console.log(notes);
+            return res.status(200).json({ message: "All notes", notes: notes, success: true });
+        } else {
+            return res.status(200).json({ message: "Oops! You haven’t added any notes yet.", success: false })
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
+    }
 })
 
 
@@ -112,23 +122,23 @@ app.get("/v1/view-note/:id", async (req, res) => {
 app.post("/v1/login", async (req, res) => {
     console.log("login");
     const { ...data } = req.body;
-    console.log(data);
+    // console.log(data);
     if (data.username == "" || data.password == "") {
-        return res.status(400).json({ message: "Data is missing." });
+        return res.status(400).json({ message: "Data is missing.", success: false });
     } else {
         try {
             const logUser = await noteUser.findOne({ username: data.username, password: data.password });
             if (logUser) {
-                console.log("logUser", logUser);
+                // console.log("logUser", logUser);
                 const token = jwt.sign({ email: logUser.email, id: logUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "24h" });
-                console.log("Token : ", token);
-                return res.status(200).json({ message: "Login successfully.", logUser, token, navigateUrl: `/v1/all-notes/${logUser._id}`, });
+                // console.log("Token : ", token);
+                return res.status(200).json({ message: "Login successfully.", logUser, token, navigateUrl: `/v1/all-notes/${logUser._id}`, success: true });
             } else {
-                return res.status(401).json({ message: "Invalid credentials. Please try again." })
+                return res.status(401).json({ message: "Invalid credentials. Please try again.", success: false })
             }
         }
         catch (error) {
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error.", success: false });
         }
     }
 })

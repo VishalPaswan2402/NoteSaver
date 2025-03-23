@@ -5,6 +5,7 @@ export const SliceFunction = createSlice({
     initialState: {
         isAuthenticate: false,
         currentUserId: null,
+        isNewNote:true
     },
     reducers: {
         setIsAuthenticate: (state, action) => {
@@ -12,7 +13,7 @@ export const SliceFunction = createSlice({
         },
         setCurrentUserId: (state, action) => {
             state.currentUserId = action.payload;
-        }
+        },
     },
 })
 

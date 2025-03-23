@@ -5,7 +5,7 @@ export default function NewPage(props) {
 
     return (
         <>
-            <AddNew heading="Add Your New Note" btnName="Save Note"/>
+            <AddNew heading="Add Your New Note" btnName="Save Note" edit={true} editType="newNote" />
         </>
     )
 }

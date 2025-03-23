@@ -19,10 +19,10 @@ function App() {
 
 
   useEffect(() => {
-    console.log("isAuthenticated : ", isAuthenticated);
+    // console.log("isAuthenticated : ", isAuthenticated);
     const token = localStorage.getItem('token');
     const currId = localStorage.getItem('currentId');
-    console.log(token);
+    // console.log(token);
     if (token) {
       dispatch(setIsAuthenticate(true));
       dispatch(setCurrentUserId(currId));
@@ -40,7 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <LandingPage />} />
         <Route path={`/v1/all-notes/${currentId}`} element={isAuthenticated ? <HomePage /> : <Navigate to="/" />} />
-        <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage heading="Add Your New Note" btnName="Save Note" edit={true} /> : <Navigate to="/" />} />
+        <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
         <Route path="/v1/view-note/:id" element={isAuthenticated ? <ViewPage /> : <Navigate to="/" />} />
         <Route path="/v1/edit-page" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
         <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
