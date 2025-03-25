@@ -16,13 +16,13 @@ const NoteUserSchema = new Schema({
         unique: true,
         required: true
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+        type: String,
+        required: true
     },
-    allNotes:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:saveNote
+    allNotes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: saveNote
     }]
 })
 

@@ -9,6 +9,10 @@ import { toast, ToastContainer } from 'react-toastify'
 export default function AddNew(props) {
     const backendUrl = "http://localhost:8080";
     const navigate = useNavigate();
+    const editNoteId = props.editNoteId;
+    if (editNoteId) {
+        console.log("Edit id add new : ", editNoteId);
+    }
     const {
         register,
         handleSubmit,
@@ -24,7 +28,7 @@ export default function AddNew(props) {
     if (props.editType == "newNote") {
         endpoint = `/v1/new-note/${userId}`;
     } else if (props.editType == "editNote") {
-        endpoint = `/v1/edit-note/${userId}`;
+        endpoint = `/v1/edit-note/${editNoteId}`;
     }
 
     console.log(endpoint);
@@ -35,11 +39,12 @@ export default function AddNew(props) {
             const response = await axios.post(`${backendUrl}${endpoint}`, data);
             console.log(response)
             if (response.data.success == true) {
-                toast.success("New Note created.");
+                navigate(`/${response.data.navigateUrl}`, {
+                    state: { toastMessage: response.data.message },
+                });
             } else {
                 toast.error("Fill all data.");
             }
-            navigate(response.data.navigateUrl);
         } catch (error) {
             toast.error("Something went wrong.");
             console.log(error);
@@ -54,7 +59,7 @@ export default function AddNew(props) {
             <div id='note-container' className='align-middle text-center'>
                 <h1 className='text-2xl p-2 font-semibold text-rose-800'>{props.heading} </h1>
                 <form onSubmit={handleSubmit(onSubmit)} id='input-container' className='grid max-w-2xl m-auto gap-4 mt-2'>
-                    <input {...register("title")} type='text' placeholder='Enter title' className='outline-2 focus:outline-blue-700 p-2 rounded-lg' defaultValue={props.title} disabled={!props.edit}></input>
+                    <input {...register("title")} type='text' placeholder='Enter title' className='outline-2 focus:outline-blue-700 p-2 rounded-lg font-bold' defaultValue={props.title} disabled={!props.edit}></input>
                     <textarea {...register("description")} id='note-area' type='text' placeholder='Enter description' className={`outline-2 focus:outline-blue-700 p-2 rounded-lg h-101 resize-none overflow-y-auto`} defaultValue={props.disc} disabled={!props.edit}></textarea>
                     {
                         props.edit

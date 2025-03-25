@@ -65,7 +65,7 @@ app.post("/v1/new-note/:id", async (req, res) => {
             const creator = await noteUser.findById(id)
             creator.allNotes.push(saved._id);
             await creator.save();
-            return res.status(200).json({ message: "Note saved successfully", creator: creator, success: true, navigateUrl: `v1/all-notes/${id}` });
+            return res.status(200).json({ message: " New note saved successfully", creator: creator, success: true, navigateUrl: `v1/all-notes/${id}` });
         }
         catch (error) {
             console.log(error);
@@ -75,13 +75,30 @@ app.post("/v1/new-note/:id", async (req, res) => {
 })
 
 
-// add new note
+// edit note note
 app.post("/v1/edit-note/:id", async (req, res) => {
     console.log("Edit your note...");
     const { id } = req.params;
     console.log(id);
     const { ...data } = req.body;
     console.log(data);
+    const noteCreator = await saveNote.findById(id);
+    const userId = noteCreator.userId;
+    if (!data.title || !data.description) {
+        return res.status(400).json({ message: "Title or description cannot be empty.", success: false });
+    }
+    try {
+        const updatedNote = await saveNote.findByIdAndUpdate(id, { title: data.title, description: data.description }, { new: true });
+        if (!updatedNote) {
+            return res.status(404).json({ message: "Note not found.", success: false });
+        }
+        console.log("Updated Note:", updatedNote);
+        return res.status(200).json({ message: "Note updated successfully", updatedNote, navigateUrl: `v1/all-notes/${userId}`, success: true });
+    }
+    catch (error) {
+        console.error("Edit note error:", error);
+        return res.status(500).json({ message: "Internal server error", navigateUrl: `v1/all-notes/${userId}`, success: false });
+    }
 })
 
 
@@ -109,13 +126,13 @@ app.get("/v1/all-notes/:id", async (req, res) => {
 app.get("/v1/view-note/:id", async (req, res) => {
     console.log("view note");
     let { id } = req.params;
-    console.log(id);
-    // const views = await noteUser.findById(id);
-    // if (views) {
-    //     console.log(views);
-    //     return res.status(200).json(views);
-    // }
-    // return res.send("Not found");
+    // console.log(id);
+    const views = await saveNote.findById(id);
+    if (views) {
+        // console.log(views);
+        return res.status(200).json({ message: "View your note.", viewNote: views, success: true });
+    }
+    return res.status(500).json({ message: "Something went wrong", success: false });
 })
 
 // login 

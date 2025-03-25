@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function NoteList(props) {
+    const currId = useSelector(state => state.notesaver.currentUserId);
 
     return (
         <>
@@ -21,8 +23,8 @@ export default function NoteList(props) {
                         }
                     </div>
                     <div className='w-3/1 justify-center place-content-evenly '>
-                        <Link to={`/v1/view-note/id`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-eye"></i></button></Link>
-                        <Link to="/v1/edit-page"><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-pencil"></i></button></Link>
+                        <Link to={`/v1/view-note/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-eye"></i></button></Link>
+                        <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-pencil"></i></button></Link>
                         <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
                         <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-share-nodes"></i></button>
                         <p className='font-xs p-1 text-rose-800'>{props.date}</p>

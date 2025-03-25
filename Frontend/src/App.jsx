@@ -42,7 +42,7 @@ function App() {
         <Route path={`/v1/all-notes/${currentId}`} element={isAuthenticated ? <HomePage /> : <Navigate to="/" />} />
         <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
         <Route path="/v1/view-note/:id" element={isAuthenticated ? <ViewPage /> : <Navigate to="/" />} />
-        <Route path="/v1/edit-page" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
+        <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
         <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
       </Routes>
       <Footer />

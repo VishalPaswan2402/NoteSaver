@@ -23,7 +23,7 @@ export default function Navbar(props) {
             <div id='navbar' className='flex place-content-between p-3 bg-cyan-800 fixed t-0 w-screen'>
                 <div id='left-navbar'>
                     <div id='left-option' className='flex pl-6 gap-4'>
-                        <NavLink className="site-logo logo-style" style={{ backgroundImage: `url(${image.logo})` }} ></NavLink>
+                        <div className="site-logo logo-style" style={{ backgroundImage: `url(${image.logo})` }} ></div>
                         {
                             isAuthenticated
                                 ?

@@ -14,7 +14,7 @@ export default function Banner(props) {
     const navigate = useNavigate();
     const [account, setAccount] = useState(true);
     const [forget, setForget] = useState(false);
-    const currentId=useSelector(state=>state.notesaver.currentUserId);
+    const currentId = useSelector(state => state.notesaver.currentUserId);
 
     const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
 

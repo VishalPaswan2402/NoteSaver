@@ -5,7 +5,7 @@ export const SliceFunction = createSlice({
     initialState: {
         isAuthenticate: false,
         currentUserId: null,
-        isNewNote:true
+        isNewNote: true
     },
     reducers: {
         setIsAuthenticate: (state, action) => {
