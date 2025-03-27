@@ -2,11 +2,9 @@ import React, { use, useState } from 'react';
 import image from '../../assets/image';
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from "react-toastify";
-import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { setCurrentUserId } from '../../ReduxSlice/SliceFunction';
-
+import { loginLogoutRecover } from '../../Utility/LoginLogoutRecover';
 
 export default function Banner(props) {
     const backendUrl = "http://localhost:8080";
@@ -15,48 +13,25 @@ export default function Banner(props) {
     const [account, setAccount] = useState(true);
     const [forget, setForget] = useState(false);
     const currentId = useSelector(state => state.notesaver.currentUserId);
-
     const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
+    const [formActive, setFormActive] = useState(true);
 
     const {
         register,
         handleSubmit,
         watch,
-        formState: { errors },
+        formState: { isSubmitting },
     } = useForm()
 
     const onSubmit = async (data) => {
-        console.log(data);
-        try {
-            const response = await axios.post(`${backendUrl}${endPoint}`, data, { withCredentials: true });
-            console.log(response.data);
-            console.log(response.data.logUser._id);
-            dispatch(setCurrentUserId(response.data.logUser._id));
-            // console.log("token :", response.data.token);
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("currentId", response.data.logUser._id);
-            toast.success("Logged in...");
-            navigate(`/v1/all-notes/${currentId}`);
-        } catch (error) {
-            if (error.status == 400) {
-                toast.error(error.response.data.message);
-                return console.log(error.response.data.message);
-            }
-            else if (error.status == 401) {
-                toast.error(error.response.data.message);
-                return console.log(error.response.data.message);
-            }
-            toast.error("Internal server error.");
-            return console.log(endPoint, "Error: ", error);
-        }
+        setFormActive(false);
+        await loginLogoutRecover(endPoint, data, dispatch, navigate, setFormActive);
     }
 
     const changeForm = () => {
         setAccount(!account);
         setForget(false);
     }
-
-    // console.log(watch("example"))
 
     return (
         <>
@@ -67,8 +42,8 @@ export default function Banner(props) {
                 </div>
 
                 <div className='w-1/2 flex justify-center'>
-                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-5 w-1/2 border-2 pt-5 pl-10 pr-10 pb-10 rounded-lg'>
-                        <h1 className='text-center text-2xl font-bold'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 pt-5 pl-10 pr-10 pb-10 rounded-lg'>
+                        <h1 className='text-center text-2xl font-bold font-amarante'>
                             {
                                 forget
                                     ?
@@ -81,57 +56,72 @@ export default function Banner(props) {
                                         "Signup Form"
                             }
                         </h1>
-                        <input type='text' placeholder='Enter username' {...register("username")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm' ></input>
+                        <input disabled={!formActive} type='text' placeholder='Enter username' {...register("username")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl' ></input>
                         {
                             forget
                                 ?
-                                <input type='email' placeholder='Enter email' {...register("email")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm'></input>
+                                <input disabled={!formActive} type='email' placeholder='Enter email' {...register("email")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl'></input>
                                 :
                                 account
                                     ?
-                                    <input type='password' placeholder='Enter password' {...register("password")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm'></input>
+                                    <input disabled={!formActive} type='password' placeholder='Enter password' {...register("password")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl'></input>
                                     :
                                     (
                                         <>
-                                            <input type='text' placeholder='Enter full name' {...register("fullname")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm' ></input>
-                                            <input type='email' placeholder='Enter email' {...register("email")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm'></input>
-                                            <input type='password' placeholder='Enter password' {...register("password")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm'></input>
-                                            <input type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 focus:outline-blue-700 p-1 rounded-sm'></input>
+                                            <input disabled={!formActive} type='text' placeholder='Enter full name' {...register("fullname")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl' ></input>
+                                            <input disabled={!formActive} type='email' placeholder='Enter email' {...register("email")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Enter password' {...register("password")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 outline-gray-400 focus:outline-blue-700 p-1 rounded-sm font-para text-2xl'></input>
                                         </>
                                     )
                         }
-                        <button type='submit' className='bg-blue-400 border-2 rounded-sm p-1 cursor-pointer hover:bg-blue-600 hover:text-white' >
+                        <button disabled={!formActive} type='submit' className={`bg-blue-400 border-2 rounded-sm p-1 cursor-pointer text-black hover:text-white font-para text-2xl
+                            ${formActive
+                                ? "bg-blue-400 hover:bg-blue-600 border-blue-600 hover:border-white "
+                                : "bg-blue-600 border-white text-white cursor-wait"
+                            } 
+                            `}>
                             {
-                                forget
+                                !formActive
                                     ?
-                                    "Send OTP"
+                                    "Processing..."
                                     :
-                                    account
+                                    forget
                                         ?
-                                        "Login"
+                                        "Send OTP"
                                         :
-                                        "Signup"
+                                        account
+                                            ?
+                                            "Login"
+                                            :
+                                            "Signup"
                             }
                         </button>
-                        <div>
-                            <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline' onClick={changeForm} >
-                                {
-                                    account
-                                        ?
-                                        "Join us now – it's free!"
-                                        :
-                                        "Already have an account?"
-                                }
-                            </p>
-                            <br></br>
-                            {
-                                forget
-                                    ?
-                                    null
-                                    :
-                                    <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline' onClick={() => setForget(!forget)} >Forget password</p>
-                            }
-                        </div>
+                        {
+                            !formActive
+                                ?
+                                null
+                                :
+                                <div>
+                                    <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline font-para text-2xl' onClick={changeForm} >
+                                        {
+                                            account
+                                                ?
+                                                "Join us now – it's free!"
+                                                :
+                                                "Already have an account?"
+                                        }
+                                    </p>
+                                    <br></br>
+                                    {
+                                        forget
+                                            ?
+                                            null
+                                            :
+                                            <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline font-para text-2xl' onClick={() => setForget(!forget)} >Forget password</p>
+                                    }
+                                </div>
+                        }
                     </form>
                 </div>
             </div>

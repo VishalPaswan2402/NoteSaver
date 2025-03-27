@@ -12,7 +12,6 @@ export default function Navbar(props) {
     const currId = useSelector(state => state.notesaver.currentUserId);
 
     const handleLogOut = () => {
-        console.log("Logout called");
         localStorage.removeItem('token');
         localStorage.removeItem('currentId');
         dispatch(setIsAuthenticate(false));
@@ -28,11 +27,11 @@ export default function Navbar(props) {
                             isAuthenticated
                                 ?
                                 <div className='flex gap-5'>
-                                    <NavLink to={`/v1/all-notes/${currId}`} className={({ isActive }) => isActive ? "active-link" : "text-white hover:text-red-400"}>All</NavLink>
-                                    <NavLink to={`/v1/add-new/${currId}`} className={({ isActive }) => isActive ? "active-link" : "text-white hover:text-red-400"}>New</NavLink>
+                                    <NavLink to={`/v1/all-notes/${currId}`} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-white font-amarante hover:text-red-400"}>All</NavLink>
+                                    <NavLink to={`/v1/add-new/${currId}`} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-white font-amarante hover:text-red-400"}>New</NavLink>
                                 </div>
                                 :
-                                <p className='text-white'>Note Kare</p>
+                                <p className='text-white font-amarante'>Note Kare</p>
                         }
                     </div>
                 </div>
@@ -42,7 +41,7 @@ export default function Navbar(props) {
                             ?
                             <>
                                 <div className='bg-white mr-4 h-8 w-8 text-center rounded-full pt-0.5'><i className="fa-solid fa-user"></i></div>
-                                <div onClick={handleLogOut} id='right-navbar' className='mr-7 cursor-pointer bg-white pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-blue-400 hover:text-white'>SignOut</div>
+                                <div onClick={handleLogOut} id='right-navbar' className='mr-7 cursor-pointer bg-white pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-blue-400 hover:text-white font-amarante'>SignOut</div>
                             </>
                             :
                             null
