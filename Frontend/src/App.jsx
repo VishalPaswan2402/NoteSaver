@@ -10,12 +10,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import LandingPage from './Pages/LandingPage/LandingPage';
 import { useEffect, useState } from 'react';
 import { setCurrentUserId, setIsAuthenticate } from './ReduxSlice/SliceFunction';
+import AlertOption from './Components/AlertOption/AlertOption';
 
 function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
   const currentId = useSelector(state => state.notesaver.currentUserId);
+  const showAlert = useSelector(state => state.notesaver.showAlertBox);
+  const noteCount = useSelector(state => state.notesaver.allNotes);
 
 
   useEffect(() => {
@@ -35,17 +38,22 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div className='pt-14'></div>
-      <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <LandingPage />} />
-        <Route path={`/v1/all-notes/${currentId}`} element={isAuthenticated ? <HomePage /> : <Navigate to="/" />} />
-        <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
-        <Route path="/v1/view-note/:id" element={isAuthenticated ? <ViewPage /> : <Navigate to="/" />} />
-        <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
-        <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
-      </Routes>
-      <Footer />
+      {
+        showAlert ? <AlertOption /> : null
+      }
+      <div className={`${showAlert ? ' blur-sm pointer-events-none' : ""}`}>
+        <Navbar />
+        <div className='pt-14'></div>
+        <Routes>
+          <Route path="/" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <LandingPage />} />
+          <Route path={`/v1/all-notes/${currentId}`} element={isAuthenticated ? <HomePage /> : <Navigate to="/" />} />
+          <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
+          <Route path="/v1/view-note/:id" element={isAuthenticated ? <ViewPage /> : <Navigate to="/" />} />
+          <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
+          <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
+        </Routes>
+        <Footer />
+      </div>
     </>
   );
 }

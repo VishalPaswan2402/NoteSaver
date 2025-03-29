@@ -14,9 +14,17 @@ const saveNoteSchema = new Schema({
         type: String,
         required: true
     },
+    isImportant: {
+        type: Boolean,
+        default: false
+    },
+    isArchive: {
+        type: Boolean,
+        default: false
+    },
     date: {
         type: String,
-        default: () => new Date().toDateString(),
+        default: () => new Date().toISOString(),
         required: true
     }
 })

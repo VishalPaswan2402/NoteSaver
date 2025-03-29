@@ -19,7 +19,7 @@ export default function Navbar(props) {
 
     return (
         <>
-            <div id='navbar' className='flex place-content-between p-3 bg-cyan-800 fixed t-0 w-screen'>
+            <div id='navbar' className='flex place-content-between p-3 bg-cyan-800 z-100 fixed t-0 w-screen'>
                 <div id='left-navbar'>
                     <div id='left-option' className='flex pl-6 gap-4'>
                         <div className="site-logo logo-style" style={{ backgroundImage: `url(${image.logo})` }} ></div>

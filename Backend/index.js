@@ -149,9 +149,22 @@ app.delete('/v1/delete-note/:id', async (req, res) => {
     catch (error) {
         console.log("delete error :", error);
         return res.status(500).json({ message: "Something went wrong", navigateUrl: `/v1/all-notes/${deleteNote.userId}`, success: false });
-
     }
+})
 
+// mark as important
+app.post('/v1/mark-important/:id', async (req, res) => {
+    const { id } = req.params;
+    const noteData = await saveNote.findById(id);
+    try {
+        const markImp = await saveNote.findByIdAndUpdate(id, { isImportant: !noteData.isImportant }, { new: true });
+        const isImp = markImp.isImportant;
+        res.status(200).json({ message: `Marked as ${isImp ? 'favourite' : 'default'}.`, navigateUrl: `/v1/all-notes/${noteData.userId}`, success: true });
+    }
+    catch (error) {
+        console.log("delete error :", error);
+        return res.status(500).json({ message: "Something went wrong", navigateUrl: `/v1/all-notes/${noteData.userId}`, success: false });
+    }
 })
 
 // login 
