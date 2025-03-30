@@ -9,7 +9,8 @@ export const SliceFunction = createSlice({
         showAlertBox: false,
         currentNoteId: null,
         allNotes: [],
-        filterOption: "Newest First"
+        filterOption: "Newest First",
+        searchQuerys: "",
     },
     reducers: {
         setAllNotes: (state, action) => {
@@ -35,6 +36,9 @@ export const SliceFunction = createSlice({
         },
         setFilterOption: (state, action) => {
             state.filterOption = action.payload;
+        },
+        setSearchQuery: (state, action) => {
+            state.searchQuerys = action.payload;
         }
     },
 })
@@ -48,7 +52,8 @@ export const {
     setAllNotes,
     handleOnDeleteNote,
     handleMarkNote,
-    setFilterOption
+    setFilterOption,
+    setSearchQuery
 } = SliceFunction.actions
 
 export default SliceFunction.reducer

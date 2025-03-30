@@ -23,7 +23,6 @@ export default function AlertOption(props) {
         setIsArchive(false);
         setActiveBtn(false);
         await deleteNote(noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn, setIsArchive);
-        // await deleteNote(noteId, onDel, setDeleteText, setIsDelete);
     }
 
     return (
