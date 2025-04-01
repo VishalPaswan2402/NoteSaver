@@ -6,7 +6,6 @@ const backendUrl = "http://localhost:8080";
 export const addUpdateNote = async (endpoint, data, navigate, setFormActive) => {
     try {
         const response = await axios.post(`${backendUrl}${endpoint}`, data);
-        // console.log(response)
         if (response.data.success == true) {
             navigate(`${response.data.navigateUrl}`, {
                 state: { toastMessage: response.data.message },

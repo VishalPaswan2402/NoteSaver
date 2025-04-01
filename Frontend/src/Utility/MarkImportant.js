@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-const backendUrl = "http://localhost:8080";
 
+const backendUrl = "http://localhost:8080";
 
 export const markImportant = async (id, navigate, onMark) => {
     try {

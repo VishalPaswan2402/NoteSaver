@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIsAuthenticate } from '../../ReduxSlice/SliceFunction';
 
 export default function Navbar(props) {
-    const backendUrl = "http://localhost:8080";
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
     const currId = useSelector(state => state.notesaver.currentUserId);

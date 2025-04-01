@@ -58,8 +58,6 @@ app.post("/v1/new-note/:id", async (req, res) => {
         return res.status(400).json({ message: "Data is missing.", success: false });
     } else {
         try {
-            // console.log("title", title);
-            // console.log("desc", description);
             const newNote = new saveNote({ userId: id, title: data.title, description: data.description });
             const saved = await newNote.save();
             console.log(saved);
@@ -110,7 +108,6 @@ app.get("/v1/all-notes/:id", async (req, res) => {
     try {
         const notes = await saveNote.find({ userId: id });
         if (notes) {
-            // console.log(notes);
             return res.status(200).json({ message: "All notes", notes: notes, success: true });
         } else {
             return res.status(200).json({ message: "Oops! You haven’t added any notes yet.", success: false })
@@ -127,14 +124,13 @@ app.get("/v1/all-notes/:id", async (req, res) => {
 app.get("/v1/view-note/:id", async (req, res) => {
     console.log("view note");
     let { id } = req.params;
-    // console.log(id);
     const views = await saveNote.findById(id);
     if (views) {
-        // console.log(views);
         return res.status(200).json({ message: "View your note.", viewNote: views, success: true });
     }
     return res.status(500).json({ message: "Something went wrong", success: false });
 })
+
 
 // delete note
 app.delete('/v1/delete-note/:id', async (req, res) => {
@@ -152,6 +148,7 @@ app.delete('/v1/delete-note/:id', async (req, res) => {
     }
 })
 
+
 // mark as important
 app.post('/v1/mark-important/:id', async (req, res) => {
     const { id } = req.params;
@@ -168,6 +165,22 @@ app.post('/v1/mark-important/:id', async (req, res) => {
 })
 
 
+// mark archive...
+app.post("/v1/mark-archive/:id", async (req, res) => {
+    const { id } = req.params;
+    console.log(" arch note id :", id);
+    const prevArchive = await saveNote.findById(id);
+    try {
+        const updateArchive = await saveNote.findByIdAndUpdate(id, { isArchive: !prevArchive.isArchive }, { new: true });
+        const isArc = updateArchive.isArchive;
+        res.status(200).json({ message: `${isArc ? 'Successfully moved to archive.' : 'Successfully restored from archive.'}`, navigateUrl: `/v1/all-notes/${prevArchive.userId}`, success: true });
+    }
+    catch (error) {
+        console.log("delete error :", error);
+        return res.status(500).json({ message: "Something went wrong", navigateUrl: `/v1/all-notes/${prevArchive.userId}`, success: false });
+    }
+})
+
 
 // login 
 app.post("/v1/login", async (req, res) => {
@@ -180,9 +193,7 @@ app.post("/v1/login", async (req, res) => {
         try {
             const logUser = await noteUser.findOne({ username: data.username, password: data.password });
             if (logUser) {
-                // console.log("logUser", logUser);
                 const token = jwt.sign({ email: logUser.email, id: logUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "24h" });
-                // console.log("Token : ", token);
                 return res.status(200).json({ message: "Login successfully.", logUser, token, navigateUrl: `v1/all-notes/${logUser._id}`, success: true });
             } else {
                 return res.status(401).json({ message: "Invalid credentials. Please try again.", success: false })
@@ -193,6 +204,7 @@ app.post("/v1/login", async (req, res) => {
         }
     }
 })
+
 
 // signup
 app.post("/v1/signup", async (req, res) => {
@@ -230,10 +242,12 @@ app.post("/v1/signup", async (req, res) => {
     }
 })
 
+
 // recover password
 app.post("/v1/recover-password", async (req, res) => {
     console.log("recover router");
 })
+
 
 app.listen(port, () => {
     console.log("Running on port", port);

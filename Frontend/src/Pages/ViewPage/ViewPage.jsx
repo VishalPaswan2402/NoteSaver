@@ -5,8 +5,6 @@ import { useParams } from 'react-router-dom';
 import { fetchNote } from '../../Utility/FetchNote';
 
 export default function ViewPage(props) {
-    const backendUrl = "http://localhost:8080";
-    const currId = useSelector(state => state.notesaver.currentUserId);
     const noteIds = useParams();
     const [noteView, setNoteView] = useState(null);
 
@@ -26,6 +24,7 @@ export default function ViewPage(props) {
                             heading="View Full Content"
                             title={noteView.title}
                             disc={noteView.description}
+                            isArch={noteView.isArchive}
                         />
                     )
                     :

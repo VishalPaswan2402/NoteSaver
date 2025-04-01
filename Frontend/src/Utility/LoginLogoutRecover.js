@@ -7,16 +7,11 @@ const backendUrl = "http://localhost:8080";
 export const loginLogoutRecover = async (endPoint, data, dispatch, navigate, setFormActive) => {
     try {
         const response = await axios.post(`${backendUrl}${endPoint}`, data, { withCredentials: true });
-        console.log(response.data);
         if (response.data.success == true) {
             dispatch(setCurrentUserId(response.data.logUser._id));
-            // console.log("token :", response.data.token);
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("currentId", response.data.logUser._id);
             toast.success("Logged in...");
-            // setTimeout(() => {
-            //     navigate(`/${response.data.navigateUrl}`);
-            // }, 5000);
             navigate(`/${response.data.navigateUrl}`);
         }
         else {

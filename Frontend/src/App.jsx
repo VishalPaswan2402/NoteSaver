@@ -20,12 +20,9 @@ function App() {
   const showAlert = useSelector(state => state.notesaver.showAlertBox);
   const noteCount = useSelector(state => state.notesaver.allNotes);
 
-
   useEffect(() => {
-    // console.log("isAuthenticated : ", isAuthenticated);
     const token = localStorage.getItem('token');
     const currId = localStorage.getItem('currentId');
-    // console.log(token);
     if (token) {
       dispatch(setIsAuthenticate(true));
       dispatch(setCurrentUserId(currId));

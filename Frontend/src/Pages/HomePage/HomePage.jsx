@@ -4,14 +4,17 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { handleMarkNote, handleOnDeleteNote, setAllNotes } from '../../ReduxSlice/SliceFunction';
+import { handleMarkNote, handleOnArchiveNote, handleOnDeleteNote, setAllNotes, setFilterNoteCount, setFilterNoteType, setFilterOptionType } from '../../ReduxSlice/SliceFunction';
 import FilterSearch from '../../Components/FilterSearch/FilterSearch';
+import { filterAndSortedNote } from '../../Utility/FilterAndSortedNote';
 
 export default function HomePage(props) {
     const backendUrl = "http://localhost:8080";
     const userId = useSelector(state => state.notesaver.currentUserId);
     const notes = useSelector(state => state.notesaver.allNotes);
-    const filterType = useSelector(state => state.notesaver.filterOption);
+    const noteType = useSelector(state => state.notesaver.filterNoteType);
+    const filterType = useSelector(state => state.notesaver.filterOptionType);
+    const isArch = useSelector(state => state.notesaver.isArc);
     const location = useLocation();
     const dispatch = useDispatch();
     const searchValue = useSelector(state => state.notesaver.searchQuerys);
@@ -21,12 +24,14 @@ export default function HomePage(props) {
             try {
                 const response = await axios.get(`${backendUrl}/v1/all-notes/${userId}`);
                 dispatch(setAllNotes(response.data.notes));
+                dispatch(setFilterNoteType("Non-Archieve"));
+                dispatch(setFilterOptionType("Newest First"));
             } catch (error) {
                 console.log("load error : ", error);
             }
         }
         fetchAllNotes();
-    }, [])
+    }, [isArch])
 
     const handleDelete = (deletedNoteId) => {
         dispatch(handleOnDeleteNote(deletedNoteId));
@@ -36,6 +41,10 @@ export default function HomePage(props) {
         dispatch(handleMarkNote(id));
     }
 
+    const handleArchieve = (id) => {
+        dispatch(handleOnArchiveNote(id));
+    }
+
     useEffect(() => {
         if (location.state?.toastMessage) {
             toast.success(location.state.toastMessage);
@@ -43,21 +52,12 @@ export default function HomePage(props) {
     }, [location])
 
     const sortedNotes = useMemo(() => {
-        if (!notes) return [];
-        let filteredNotes = [...notes];
-        if (filterType === "Newest First") {
-            filteredNotes.sort((a, b) => new Date(b.date) - new Date(a.date));
-        } else if (filterType === "Oldest First") {
-            filteredNotes.sort((a, b) => new Date(a.date) - new Date(b.date));
-        } else if (filterType === "Favourite") {
-            filteredNotes.sort((a, b) => (b.isImportant - a.isImportant) || (new Date(b.date) - new Date(a.date)));
-        } else if (filterType === "A-Z Order") {
-            filteredNotes.sort((a, b) => a.title.localeCompare(b.title));
-        } else if (filterType === "Z-A Order") {
-            filteredNotes.sort((a, b) => b.title.localeCompare(a.title));
-        }
-        return filteredNotes.filter(note => note.title.toLowerCase().includes(searchValue.toLowerCase()));
-    }, [filterType, notes, searchValue]);
+        return filterAndSortedNote(notes, noteType, filterType, searchValue);
+    }, [filterType, noteType, notes, searchValue]);
+
+    useEffect(() => {
+        dispatch(setFilterNoteCount(sortedNotes.length));
+    }, [sortedNotes, dispatch]);
 
 
     return (
@@ -87,6 +87,8 @@ export default function HomePage(props) {
                                         imp={item.isImportant}
                                         onDelete={handleDelete}
                                         onMark={updateMark}
+                                        isArch={item.isArchive}
+                                        onArchive={handleArchieve}
                                     />
                                 ))}
                             </div>

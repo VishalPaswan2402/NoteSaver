@@ -1,33 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { deleteNote } from '../../Utility/DeleteNote.js'
-import { useReactToPrint } from "react-to-print";
 import { markImportant } from '../../Utility/MarkImportant.js';
-import { setAlertBox } from '../../ReduxSlice/SliceFunction.js';
+import { setAlertBox, setCurrentNoteArchive } from '../../ReduxSlice/SliceFunction.js';
 
 export default function NoteList(props) {
-    const currId = useSelector(state => state.notesaver.currentUserId);
-    const [deleteOption, setDeleteOption] = useState(false);
-    const [deleteText, setDeleteText] = useState("Delete");
-    const [archiveText, setArchiveText] = useState("Archive");
-    const [isDelete, setIsDelete] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch()
-    const deletebox = useSelector(state => state.notesaver.showAlertBox);
-    const deleteNoteId = useSelector(state => state.notesaver.currentNoteId);
 
-    const handleDeleteOption = (noteid) => {
+    const handleDeleteOption = (noteid,archVal) => {
+        dispatch(setCurrentNoteArchive(archVal));
         dispatch(setAlertBox(noteid));
-        setDeleteOption(prev => !prev);
     };
 
     const markAsImportant = async (id, onMark) => {
         await markImportant(id, navigate, onMark);
-    }
-
-    const handleArchive = () => {
-        console.log("Clicked archive");
     }
 
     return (
@@ -51,7 +38,7 @@ export default function NoteList(props) {
                         <div className='flex flex-wrap justify-center'>
                             <Link to={`/v1/view-note/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-eye"></i></button></Link>
                             <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-pencil"></i></button></Link>
-                            <button onClick={() => handleDeleteOption(props.noteId)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
+                            <button onClick={() => handleDeleteOption(props.noteId,props.isArch)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
                             <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-share-nodes"></i></button>
                             <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-print"></i></button>
                             <button onClick={() => markAsImportant(props.noteId, props.onMark)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>

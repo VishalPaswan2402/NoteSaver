@@ -9,8 +9,15 @@ export const SliceFunction = createSlice({
         showAlertBox: false,
         currentNoteId: null,
         allNotes: [],
-        filterOption: "Newest First",
+        filterNoteType: "Non-Archieve",
+        filterNoteTypeIcon: "file-lines",
+        filterOptionType: "Newest First",
+        filterOptionTypeIcon: "clock",
         searchQuerys: "",
+        isArc: true,
+        currNoteArchive: false,
+        isViewPage: false,
+        filteredCount: 0
     },
     reducers: {
         setAllNotes: (state, action) => {
@@ -34,26 +41,52 @@ export const SliceFunction = createSlice({
                 note._id === action.payload ? { ...note, isImportant: !note.isImportant } : note
             );
         },
-        setFilterOption: (state, action) => {
-            state.filterOption = action.payload;
+        setFilterNoteType: (state, action) => {
+            state.filterNoteType = action.payload;
+        },
+        setFilterNoteTypeIcon: (state, action) => {
+            state.filterNoteTypeIcon = action.payload;
+        },
+        setFilterOptionType: (state, action) => {
+            state.filterOptionType = action.payload;
+        },
+        setFilterOptionTypeIcon: (state, action) => {
+            state.filterOptionTypeIcon = action.payload;
         },
         setSearchQuery: (state, action) => {
             state.searchQuerys = action.payload;
+        },
+        handleOnArchiveNote: (state, action) => {
+            state.isArc = !state.isArc;
+        },
+        setCurrentNoteArchive: (state, action) => {
+            state.currNoteArchive = action.payload;
+        },
+        setViewPageDelete: (state, action) => {
+            state.isViewPage = action.payload;
+        },
+        setFilterNoteCount:(state,action)=>{
+            state.filteredCount=action.payload;
         }
     },
 })
 
-
 // Action creators are generated for each case reducer function
 export const {
+    setAllNotes,
     setIsAuthenticate,
     setCurrentUserId,
     setAlertBox,
-    setAllNotes,
     handleOnDeleteNote,
     handleMarkNote,
-    setFilterOption,
-    setSearchQuery
-} = SliceFunction.actions
+    setFilterNoteType,
+    setFilterNoteTypeIcon,
+    setFilterOptionType,
+    setFilterOptionTypeIcon,
+    setSearchQuery,
+    handleOnArchiveNote,
+    setCurrentNoteArchive,
+    setViewPageDelete,
+    setFilterNoteCount } = SliceFunction.actions
 
 export default SliceFunction.reducer

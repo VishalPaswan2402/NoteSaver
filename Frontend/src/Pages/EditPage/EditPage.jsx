@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { fetchNote } from '../../Utility/FetchNote';
 
 export default function EditPage(props) {
-    const backendUrl = "http://localhost:8080";
     const editId = useParams();
     const [noteView, setNoteView] = useState(null);
 
@@ -20,7 +19,7 @@ export default function EditPage(props) {
                 noteView
                     ?
                     (
-                        <AddNew heading="Edit Your Note" title={noteView.title} disc={noteView.description} btnName="Update Note" edit={true} editType="editNote" editNoteId={editId.id} />
+                        <AddNew heading="Edit Your Note" title={noteView.title} disc={noteView.description} btnName="Update Note" edit={true} editType="editNote" editNoteId={editId.id} isArch={noteView.isArchive} />
                     )
                     :
                     <p className='text-blue-700 text-3xl font-bold text-center m-20'>Loading...</p>
