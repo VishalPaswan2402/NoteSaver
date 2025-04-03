@@ -42,7 +42,7 @@ export default function Banner(props) {
                 </div>
 
                 <div className='w-1/2 flex justify-center'>
-                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 pt-5 pl-10 pr-10 pb-10 rounded-lg'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 pt-5 pl-10 pr-10 pb-10 rounded-lg shadow-2xl shadow-gray-700'>
                         <h1 className='text-center text-2xl font-bold font-amarante'>
                             {
                                 forget
@@ -107,9 +107,9 @@ export default function Banner(props) {
                                         {
                                             account
                                                 ?
-                                                "Join us now – it's free!"
+                                                "Join us now – it's free !"
                                                 :
-                                                "Already have an account?"
+                                                "Already have an account ?"
                                         }
                                     </p>
                                     <br></br>
@@ -118,7 +118,7 @@ export default function Banner(props) {
                                             ?
                                             null
                                             :
-                                            <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline font-para text-2xl' onClick={() => setForget(!forget)} >Forget password</p>
+                                            <p className='cursor-pointer hover:text-blue-800 hover:font-semibold inline font-para text-2xl' onClick={() => setForget(!forget)} >Forget password ?</p>
                                     }
                                 </div>
                         }

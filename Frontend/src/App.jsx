@@ -20,6 +20,7 @@ function App() {
   const showAlert = useSelector(state => state.notesaver.showAlertBox);
   const noteCount = useSelector(state => state.notesaver.allNotes);
 
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const currId = localStorage.getItem('currentId');
@@ -28,7 +29,7 @@ function App() {
       dispatch(setCurrentUserId(currId));
     } else {
       dispatch(setIsAuthenticate(false));
-      navigate('/');
+      // navigate('/');
     }
   }, [navigate, isAuthenticated])
 
@@ -38,14 +39,14 @@ function App() {
       {
         showAlert ? <AlertOption /> : null
       }
-      <div className={`${showAlert ? ' blur-sm pointer-events-none' : ""}`}>
+      <div className={`${(showAlert) ? ' blur-sm pointer-events-none' : ""}`}>
         <Navbar />
         <div className='pt-14'></div>
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <LandingPage />} />
           <Route path={`/v1/all-notes/${currentId}`} element={isAuthenticated ? <HomePage /> : <Navigate to="/" />} />
           <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
-          <Route path="/v1/view-note/:id" element={isAuthenticated ? <ViewPage /> : <Navigate to="/" />} />
+          <Route path="/v1/view-note/:id" element={<ViewPage />} />
           <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
           <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
         </Routes>

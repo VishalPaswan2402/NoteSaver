@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { markImportant } from '../../Utility/MarkImportant.js';
 import { setAlertBox, setCurrentNoteArchive } from '../../ReduxSlice/SliceFunction.js';
+import { toast } from 'react-toastify';
 
 export default function NoteList(props) {
+    const frontendUrl = `http://localhost:5173`;
     const navigate = useNavigate();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-    const handleDeleteOption = (noteid,archVal) => {
+    const handleDeleteOption = (noteid, archVal) => {
         dispatch(setCurrentNoteArchive(archVal));
         dispatch(setAlertBox(noteid));
     };
@@ -17,9 +19,16 @@ export default function NoteList(props) {
         await markImportant(id, navigate, onMark);
     }
 
+    const handleShareOption = (id) => {
+        const copyUrl = `${frontendUrl}/v1/view-note/${id}`;
+        navigator.clipboard.writeText(copyUrl)
+            .then(() => toast.success("URL copied to clipboard."))
+            .catch(err => toast.error("Something went wrong"));
+    }
+
     return (
         <>
-            <div className='bg-blue-100 border-1 flex min-w-200 m-auto mt-3 mb-2 p-2 hover:bg-blue-200 rounded-lg'>
+            <div className='bg-blue-100 border-2 border-gray-400 flex min-w-200 m-auto mt-3 mb-2 p-2 hover:bg-blue-200 rounded-lg'>
                 <div className='flex w-full'>
                     <div className=' w-7/1 p-1'>
                         <p className='font-semibold text-rose-900 font-para text-3xl'>{props.name.length > 30 ? props.name.slice(0, 30) + "..." : props.name}</p>
@@ -38,9 +47,10 @@ export default function NoteList(props) {
                         <div className='flex flex-wrap justify-center'>
                             <Link to={`/v1/view-note/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-eye"></i></button></Link>
                             <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-pencil"></i></button></Link>
-                            <button onClick={() => handleDeleteOption(props.noteId,props.isArch)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
-                            <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-share-nodes"></i></button>
+                            <button onClick={() => handleDeleteOption(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
+                            <button onClick={() => handleShareOption(props.noteId)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-share-nodes"></i></button>
                             <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-print"></i></button>
+                            <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-clone"></i></button>
                             <button onClick={() => markAsImportant(props.noteId, props.onMark)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>
                         </div>
                         <div className=' text-center'>

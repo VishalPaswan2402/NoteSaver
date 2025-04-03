@@ -17,7 +17,7 @@ export const SliceFunction = createSlice({
         isArc: true,
         currNoteArchive: false,
         isViewPage: false,
-        filteredCount: 0
+        filteredCount: 0,
     },
     reducers: {
         setAllNotes: (state, action) => {
@@ -65,9 +65,9 @@ export const SliceFunction = createSlice({
         setViewPageDelete: (state, action) => {
             state.isViewPage = action.payload;
         },
-        setFilterNoteCount:(state,action)=>{
-            state.filteredCount=action.payload;
-        }
+        setFilterNoteCount: (state, action) => {
+            state.filteredCount = action.payload;
+        },
     },
 })
 
@@ -87,6 +87,6 @@ export const {
     handleOnArchiveNote,
     setCurrentNoteArchive,
     setViewPageDelete,
-    setFilterNoteCount } = SliceFunction.actions
+    setFilterNoteCount, } = SliceFunction.actions
 
 export default SliceFunction.reducer

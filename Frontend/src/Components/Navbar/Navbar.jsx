@@ -40,10 +40,14 @@ export default function Navbar(props) {
                             ?
                             <>
                                 <div className='bg-white mr-4 h-8 w-8 text-center rounded-full pt-0.5'><i className="fa-solid fa-user"></i></div>
-                                <div onClick={handleLogOut} id='right-navbar' className='mr-7 cursor-pointer bg-white pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-blue-400 hover:text-white font-amarante'>SignOut</div>
+                                <div onClick={handleLogOut} id='right-navbar' className='mr-7 cursor-pointer bg-white pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-blue-400 hover:text-white font-amarante'>LogOut</div>
                             </>
                             :
-                            null
+                            <a href='/'>
+                                <>
+                                    <div id='right-navbar' className='mr-7 cursor-pointer bg-white pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-blue-400 hover:text-white font-amarante'>Login</div>
+                                </>
+                            </a>
                     }
                 </div>
             </div>
