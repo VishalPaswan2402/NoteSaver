@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { act } from 'react';
 
 export const SliceFunction = createSlice({
     name: 'notesaver',
@@ -18,6 +19,9 @@ export const SliceFunction = createSlice({
         currNoteArchive: false,
         isViewPage: false,
         filteredCount: 0,
+        openTypeOption: false,
+        openFilterOption: false,
+        viewPageChange: false
     },
     reducers: {
         setAllNotes: (state, action) => {
@@ -68,6 +72,21 @@ export const SliceFunction = createSlice({
         setFilterNoteCount: (state, action) => {
             state.filteredCount = action.payload;
         },
+        setOpenTypeOption: (state, action) => {
+            state.openTypeOption = !state.openTypeOption;
+            if (state.openTypeOption) {
+                state.openFilterOption = false; // Ensure the other option is closed
+            }
+        },
+        setOpenFiltereOption: (state, action) => {
+            state.openFilterOption = !state.openFilterOption;
+            if (state.openFilterOption) {
+                state.openTypeOption = false; // Ensure the other option is closed
+            }
+        },
+        updateViewPageChange: (state, action) => {
+            state.viewPageChange = !state.viewPageChange;
+        }
     },
 })
 
@@ -87,6 +106,9 @@ export const {
     handleOnArchiveNote,
     setCurrentNoteArchive,
     setViewPageDelete,
-    setFilterNoteCount, } = SliceFunction.actions
+    setFilterNoteCount,
+    setOpenTypeOption,
+    setOpenFiltereOption,
+    updateViewPageChange } = SliceFunction.actions
 
 export default SliceFunction.reducer

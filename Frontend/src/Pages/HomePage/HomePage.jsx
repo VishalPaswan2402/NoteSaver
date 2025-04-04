@@ -3,7 +3,7 @@ import NoteList from '../../Components/NoteList/NoteList';
 import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { handleMarkNote, handleOnArchiveNote, handleOnDeleteNote, setAllNotes, setFilterNoteCount, setFilterNoteType, setFilterOptionType } from '../../ReduxSlice/SliceFunction';
 import FilterSearch from '../../Components/FilterSearch/FilterSearch';
 import { filterAndSortedNote } from '../../Utility/FilterAndSortedNote';
@@ -63,15 +63,15 @@ export default function HomePage(props) {
     return (
         <>
             <ToastContainer position='top-center' autoClose={1500} />
-            <h1 className='font-extrabold text-4xl text-center pt-3 text-rose-800 font-amarante'>Your Organized Notes</h1>
+            <h1 className='font-extrabold text-4xl text-center pt-3 text-[#B03052] font-amarante'>Your Organized Notes</h1>
             {
                 notes.length > 0 ? <FilterSearch /> : null
             }
             {
                 (sortedNotes.length == 0 && notes.length > 0)
                     ?
-                    <p className='text-fuchsia-700 font-medium text-2xl text-center m-10'>
-                        Oops! No matching notes. <br /> Try a new keyword!
+                    <p className='text-[#D76C82] text-2xl font-bold font-para text-center m-10'>
+                        Oops ! No matches found. <br /> Please try a different keyword !
                     </p> :
                     notes.length > 0
                         ?
@@ -89,14 +89,16 @@ export default function HomePage(props) {
                                         onMark={updateMark}
                                         isArch={item.isArchive}
                                         onArchive={handleArchieve}
+                                        archDate={item.archiveDate}
                                     />
                                 ))}
                             </div>
                         )
                         :
                         (
-                            <p className='text-fuchsia-700 font-medium text-2xl text-center m-10'>
-                                Your notebook is empty. <br /> Add your first note!
+                            <p className='text-[#D76C82] text-2xl font-bold font-para text-center m-10'>
+                                Your notebook is empty. <br />
+                                <Link to={`/v1/add-new/${userId}`} className='hover:text-[#B03052]'>Click to add your first note !</Link>
                             </p>
                         )
             }

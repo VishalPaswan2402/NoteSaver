@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { markImportant } from '../../Utility/MarkImportant.js';
 import { setAlertBox, setCurrentNoteArchive } from '../../ReduxSlice/SliceFunction.js';
 import { toast } from 'react-toastify';
+import { getRemainingDays } from '../../Utility/RemainingTime.js';
 
 export default function NoteList(props) {
     const frontendUrl = `http://localhost:5173`;
@@ -15,7 +16,11 @@ export default function NoteList(props) {
         dispatch(setAlertBox(noteid));
     };
 
-    const markAsImportant = async (id, onMark) => {
+    const markAsImportant = async (id, onMark, isArch) => {
+        if (isArch) {
+            toast.error("Please restore your note.");
+            return;
+        }
         await markImportant(id, navigate, onMark);
     }
 
@@ -28,7 +33,7 @@ export default function NoteList(props) {
 
     return (
         <>
-            <div className='bg-blue-100 border-2 border-gray-400 flex min-w-200 m-auto mt-3 mb-2 p-2 hover:bg-blue-200 rounded-lg'>
+            <div className='bg-[#ffadbd2c] border-2 border-[#D76C82] flex min-w-200 m-auto mt-3 mb-2 p-2 hover:bg-[#ffadbd69] rounded-lg hover:border-[#B03052] hover:shadow-lg hover:shadow-[#d76c8192]' style={{ transition: '0.5s' }}>
                 <div className='flex w-full'>
                     <div className=' w-7/1 p-1'>
                         <p className='font-semibold text-rose-900 font-para text-3xl'>{props.name.length > 30 ? props.name.slice(0, 30) + "..." : props.name}</p>
@@ -45,16 +50,25 @@ export default function NoteList(props) {
                     </div>
                     <div className='w-3/1 justify-center place-content-evenly grid'>
                         <div className='flex flex-wrap justify-center'>
-                            <Link to={`/v1/view-note/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-eye"></i></button></Link>
-                            <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-pencil"></i></button></Link>
-                            <button onClick={() => handleDeleteOption(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-trash"></i></button>
-                            <button onClick={() => handleShareOption(props.noteId)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-share-nodes"></i></button>
-                            <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-print"></i></button>
-                            <button className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className="fa-solid fa-clone"></i></button>
-                            <button onClick={() => markAsImportant(props.noteId, props.onMark)} className='w-10 cursor-pointer border-2 border-gray-400 rounded-lg p-2 m-1 text-gray-600 hover:text-black hover:border-black hover:bg-white'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>
+
+                            <Link to={`/v1/view-note/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-eye"></i></button></Link>
+                            {
+                                props.isArch
+                                    ?
+                                    null
+                                    :
+                                    <>
+                                        <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-pencil"></i></button></Link>
+                                        <button onClick={() => handleShareOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
+                                        <button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-print"></i></button>
+                                        <button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
+                                    </>
+                            }
+                            <button onClick={() => handleDeleteOption(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-trash"></i></button>
+                            <button onClick={() => markAsImportant(props.noteId, props.onMark, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>
                         </div>
                         <div className=' text-center'>
-                            <p className='font-xs p-1 text-rose-800 font-para text-lg font-bold'>{props.date}</p>
+                            <p className='font-xs p-1 text-rose-800 font-para text-lg font-bold'>{props.archDate != null ? getRemainingDays(props.archDate) : props.date}</p>
                         </div>
                     </div>
                 </div>

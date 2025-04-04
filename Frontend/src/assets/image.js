@@ -1,4 +1,4 @@
-import logo from '../assets/logo.png'
+import logo from '../assets/notes.png'
 import book from '../assets/book.png'
 const image = {
     logo,

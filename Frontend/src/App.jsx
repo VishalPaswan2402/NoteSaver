@@ -39,7 +39,7 @@ function App() {
       {
         showAlert ? <AlertOption /> : null
       }
-      <div className={`${(showAlert) ? ' blur-sm pointer-events-none' : ""}`}>
+      <div className={`${(showAlert) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
         <Navbar />
         <div className='pt-14'></div>
         <Routes>

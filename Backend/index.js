@@ -49,18 +49,14 @@ const allNotesMiddleware = async (req, res, next) => {
 
 // add new note
 app.post("/v1/new-note/:id", async (req, res) => {
-    console.log("Adding new note...");
     const { id } = req.params;
-    console.log(id);
     const { ...data } = req.body;
-    console.log(data);
     if (data.title == "" || data.description == "") {
         return res.status(400).json({ message: "Data is missing.", success: false });
     } else {
         try {
             const newNote = new saveNote({ userId: id, title: data.title, description: data.description });
             const saved = await newNote.save();
-            console.log(saved);
             const creator = await noteUser.findById(id)
             creator.allNotes.push(saved._id);
             await creator.save();
@@ -76,11 +72,8 @@ app.post("/v1/new-note/:id", async (req, res) => {
 
 // edit note note
 app.post("/v1/edit-note/:id", async (req, res) => {
-    console.log("Edit your note...");
     const { id } = req.params;
-    console.log(id);
     const { ...data } = req.body;
-    console.log(data);
     const noteCreator = await saveNote.findById(id);
     const userId = noteCreator.userId;
     if (!data.title || !data.description) {
@@ -91,7 +84,6 @@ app.post("/v1/edit-note/:id", async (req, res) => {
         if (!updatedNote) {
             return res.status(404).json({ message: "Note not found.", success: false });
         }
-        console.log("Updated Note:", updatedNote);
         return res.status(200).json({ message: "Note updated successfully", updatedNote, navigateUrl: `/v1/all-notes/${userId}`, success: true });
     }
     catch (error) {
@@ -103,7 +95,6 @@ app.post("/v1/edit-note/:id", async (req, res) => {
 
 // show all notes
 app.get("/v1/all-notes/:id", async (req, res) => {
-    console.log("All notes...");
     const { id } = req.params;
     try {
         const notes = await saveNote.find({ userId: id });
@@ -122,7 +113,6 @@ app.get("/v1/all-notes/:id", async (req, res) => {
 
 // view note
 app.get("/v1/view-note/:id", async (req, res) => {
-    console.log("view note");
     let { id } = req.params;
     const views = await saveNote.findById(id);
     if (views) {
@@ -135,8 +125,6 @@ app.get("/v1/view-note/:id", async (req, res) => {
 // delete note
 app.delete('/v1/delete-note/:id', async (req, res) => {
     const { id } = req.params;
-    console.log("del id : ", id);
-    console.log("Delete note ?");
     try {
         const deleteNote = await saveNote.findByIdAndDelete(id);
         const removeReference = await noteUser.findByIdAndUpdate(deleteNote.userId, { $pull: { allNotes: id } });
@@ -168,12 +156,19 @@ app.post('/v1/mark-important/:id', async (req, res) => {
 // mark archive...
 app.post("/v1/mark-archive/:id", async (req, res) => {
     const { id } = req.params;
-    console.log(" arch note id :", id);
     const prevArchive = await saveNote.findById(id);
     try {
-        const updateArchive = await saveNote.findByIdAndUpdate(id, { isArchive: !prevArchive.isArchive }, { new: true });
-        const isArc = updateArchive.isArchive;
-        res.status(200).json({ message: `${isArc ? 'Successfully moved to archive.' : 'Successfully restored from archive.'}`, navigateUrl: `/v1/all-notes/${prevArchive.userId}`, success: true });
+        if (prevArchive.isArchive) {
+            const updateArchive = await saveNote.findByIdAndUpdate(id, { isArchive: false, archiveDate: null }, { new: true });
+            const creator = await noteUser.findById(prevArchive.userId)
+            creator.allNotes.push(id);
+            await creator.save();
+        } else {
+            const updateArchive = await saveNote.findByIdAndUpdate(id, { isArchive: true, archiveDate: new Date() }, { new: true });
+            const removeReference = await noteUser.findByIdAndUpdate(prevArchive.userId, { $pull: { allNotes: id } });
+        }
+        const isArc = prevArchive.isArchive;
+        res.status(200).json({ message: `${!isArc ? 'Successfully moved to archive.' : 'Successfully restored from archive.'}`, navigateUrl: `/v1/all-notes/${prevArchive.userId}`, success: true });
     }
     catch (error) {
         console.log("delete error :", error);
@@ -184,9 +179,7 @@ app.post("/v1/mark-archive/:id", async (req, res) => {
 
 // login 
 app.post("/v1/login", async (req, res) => {
-    console.log("login");
     const { ...data } = req.body;
-    // console.log(data);
     if (data.username == "" || data.password == "") {
         return res.status(400).json({ message: "Data is missing.", success: false });
     } else {
@@ -208,10 +201,8 @@ app.post("/v1/login", async (req, res) => {
 
 // signup
 app.post("/v1/signup", async (req, res) => {
-    console.log("Signup");
     const { fullname, username, email, password } = req.body;
     const { ...data } = req.body;
-    console.log(data);
     if (data.username == "" || data.fullname == "" || data.email == "" || data.password == "" || data.cnfpassword == "") {
         return res.status(400).json({ message: "Data is missing.", success: false });
     }
@@ -231,8 +222,6 @@ app.post("/v1/signup", async (req, res) => {
             }
             const newUser = new noteUser({ fullname, username, email, password });
             const savedUser = await newUser.save();
-            console.log(savedUser);
-            console.log("id : ", savedUser._id)
             return res.status(200).json({ message: "Account created successfully", logUser: savedUser, navigateUrl: `v1/all-notes/${savedUser._id}`, success: true });
         }
         catch (error) {

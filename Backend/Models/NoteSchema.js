@@ -22,6 +22,11 @@ const saveNoteSchema = new Schema({
         type: Boolean,
         default: false
     },
+    archiveDate: {
+        type: Date,
+        default: null,
+        expires: 864000, // 10 days in seconds (10 * 24 * 60 * 60)
+    },
     date: {
         type: String,
         default: () => new Date().toISOString(),

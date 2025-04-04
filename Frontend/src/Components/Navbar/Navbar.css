@@ -1,5 +1,5 @@
 .active-link {
-    color: rgb(255, 242, 3);
+    color: #EBE8DB;
     font-weight: 600;
 }
 
@@ -10,5 +10,5 @@
 }
 
 #navbar {
-    box-shadow: 1px 1px 10px rgb(0, 0, 0);
+    box-shadow: 1px 1px 10px #3D0301;
 }
