@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { markImportant } from '../../Utility/MarkImportant.js';
-import { setAlertBox, setCurrentNoteArchive } from '../../ReduxSlice/SliceFunction.js';
+import { setAlertBox, setCurrentNoteArchive, setDisplayLinkBox, setDisplayShareOption, setSharedNoteId } from '../../ReduxSlice/SliceFunction.js';
 import { toast } from 'react-toastify';
 import { getRemainingDays } from '../../Utility/RemainingTime.js';
 
@@ -10,6 +10,7 @@ export default function NoteList(props) {
     const frontendUrl = `http://localhost:5173`;
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const idShared = useSelector(state => state.notesaver.sharedNoteId);
 
     const handleDeleteOption = (noteid, archVal) => {
         dispatch(setCurrentNoteArchive(archVal));
@@ -24,11 +25,14 @@ export default function NoteList(props) {
         await markImportant(id, navigate, onMark);
     }
 
-    const handleShareOption = (id) => {
-        const copyUrl = `${frontendUrl}/v1/view-note/${id}`;
-        navigator.clipboard.writeText(copyUrl)
-            .then(() => toast.success("URL copied to clipboard."))
-            .catch(err => toast.error("Something went wrong"));
+    const handleShareCloneOption = (shareId) => {
+        dispatch(setSharedNoteId(shareId));
+        dispatch(setDisplayShareOption());
+    }
+
+    const openShareLinkBox = (id) => {
+        dispatch(setSharedNoteId(id));
+        dispatch(setDisplayLinkBox());
     }
 
     return (
@@ -59,9 +63,9 @@ export default function NoteList(props) {
                                     :
                                     <>
                                         <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-pencil"></i></button></Link>
-                                        <button onClick={() => handleShareOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
+                                        <button onClick={() => openShareLinkBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
                                         <button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-print"></i></button>
-                                        <button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
+                                        <button onClick={() => handleShareCloneOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
                                     </>
                             }
                             <button onClick={() => handleDeleteOption(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-trash"></i></button>

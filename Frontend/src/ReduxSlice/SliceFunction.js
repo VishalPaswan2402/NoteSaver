@@ -21,7 +21,14 @@ export const SliceFunction = createSlice({
         filteredCount: 0,
         openTypeOption: false,
         openFilterOption: false,
-        viewPageChange: false
+        viewPageChange: false,
+        displayShareOption: false,
+        sharedNoteId: null,
+        displayCodeBox: false,
+        displayLinkBox: false,
+        shareEditCodeBox: false,
+        noteToVerify: null,
+        editNoteData: [],
     },
     reducers: {
         setAllNotes: (state, action) => {
@@ -86,6 +93,27 @@ export const SliceFunction = createSlice({
         },
         updateViewPageChange: (state, action) => {
             state.viewPageChange = !state.viewPageChange;
+        },
+        setDisplayShareOption: (state, action) => {
+            state.displayShareOption = !state.displayShareOption;
+        },
+        setSharedNoteId: (state, action) => {
+            state.sharedNoteId = action.payload;
+        },
+        setDisplayCodeBox: (state, action) => {
+            state.displayCodeBox = action.payload;
+        },
+        setDisplayLinkBox: (state, action) => {
+            state.displayLinkBox = !state.displayLinkBox;
+        },
+        setShareEditCodeBox: (state, action) => {
+            state.shareEditCodeBox = action.payload;
+        },
+        setNoteIdToVerify: (state, action) => {
+            state.noteToVerify = action.payload;
+        },
+        setEditNoteData: (state, action) => {
+            state.editNoteData = action.payload;
         }
     },
 })
@@ -109,6 +137,14 @@ export const {
     setFilterNoteCount,
     setOpenTypeOption,
     setOpenFiltereOption,
-    updateViewPageChange } = SliceFunction.actions
+    updateViewPageChange,
+    setDisplayShareOption,
+    setSharedNoteId,
+    setDisplayCodeBox,
+    setDisplayLinkBox,
+    setShareEditCodeBox,
+    setNoteIdToVerify,
+    setEditNoteData
+} = SliceFunction.actions
 
 export default SliceFunction.reducer

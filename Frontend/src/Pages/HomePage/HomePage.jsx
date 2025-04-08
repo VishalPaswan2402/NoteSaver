@@ -90,6 +90,8 @@ export default function HomePage(props) {
                                         isArch={item.isArchive}
                                         onArchive={handleArchieve}
                                         archDate={item.archiveDate}
+                                        originalId={item.originalNoteId}
+                                        isEditable={item.isEditable}
                                     />
                                 ))}
                             </div>

@@ -31,6 +31,18 @@ const saveNoteSchema = new Schema({
         type: String,
         default: () => new Date().toISOString(),
         required: true
+    },
+    isEditable: {
+        type: Boolean,
+        default: false
+    },
+    shareCode: {
+        type: String,
+        default: null
+    },
+    originalNoteId: {
+        type: String,
+        default: null
     }
 })
 

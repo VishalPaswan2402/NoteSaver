@@ -177,6 +177,109 @@ app.post("/v1/mark-archive/:id", async (req, res) => {
 })
 
 
+// share original note to edit...
+app.post("/v1/share-original/:noteId", async (req, res) => {
+    const { noteId } = req.params;
+    try {
+        const findNote = await saveNote.findById(noteId);
+        if (findNote) {
+            if (findNote.isEditable === true) {
+                const secretKey = findNote.shareCode;
+                return res.status(200).json({ message: `Already editable note.`, shareOriginalUrl: `/v1/write-original-file/${noteId}`, isActiveNote: true, success: true });
+            }
+            else {
+                return res.status(200).json({ message: `Enter secret code.`, isActiveNote: false, navigateUrl: `/v1/enter-share-code/${noteId}`, success: true });
+            }
+        }
+        else {
+            return res.status(404).json({ message: "Note not found.", success: false });
+        }
+    }
+    catch (error) {
+        console.log("Share original error", error);
+        return res.status(500).json({ message: "Something went wrong", success: false });
+    }
+});
+
+
+// set share code for note...
+app.post('/v1/set-original-share-code/:noteId', async (req, res) => {
+    console.log("Set share code...");
+    const { noteId } = req.params;
+    const { ...data } = req.body;
+    try {
+        const getNote = await saveNote.findById(noteId);
+        if (getNote) {
+            if (getNote.isEditable === false) {
+                const updateShareNote = await saveNote.findByIdAndUpdate(noteId, { isEditable: true, shareCode: data.secretKey });
+                return res.status(200).json({ message: `Shared link generated.`,message:'Code saved successfully, go to share option to share note.', isPassSet: true, success: true });
+            } else {
+                return res.status(200).json({ message: `Already active for edit.`, success: true });
+            }
+        }
+        else {
+            return res.status(404).json({ message: "Note not found.", success: false });
+        }
+    }
+    catch (error) {
+        console.log("Share original error", error);
+        return res.status(500).json({ message: "Something went wrong", success: false });
+    }
+})
+
+
+// compare share code...
+app.post('/v1/verify-original-share-code/:noteId', async (req, res) => {
+    const { noteId } = req.params;
+    const { ...data } = req.body;
+    try {
+        if (data.secretKey) {
+            const findNote = await saveNote.findById(noteId);
+            const isAvalEdit = findNote.isEditable;
+            if (isAvalEdit) {
+                if (findNote.shareCode === data.secretKey) {
+                    return res.status(200).json({ message: "Note found successfully.",message :'Code verified successfully.', editNote: findNote, isPassSet: false, success: true });
+                }
+                else {
+                    return res.status(401).json({ message: "Please enter correct key.", success: false });
+                }
+            }
+            else {
+                return res.status(404).json({ message: "Note is not available to editable.", success: false });
+            }
+        }
+        else {
+            return res.status(401).json({ message: "Please enter secret key.", success: false });
+        }
+
+    } catch (error) {
+        console.log("Secret code error", error);
+        return res.status(500).json({ message: "Something went wrong", success: false });
+    }
+})
+
+
+// updade original shared data...
+app.post('/v1/update-original-shared/:noteId', async (req, res) => {
+    const { noteId } = req.params;
+    const { ...data } = req.body;
+    try {
+        const findNote = await saveNote.findById(noteId);
+        if (findNote) {
+            const updateNote = await saveNote.findByIdAndUpdate(noteId, { title: data.title, description: data.description });
+            res.status(200).json({ message: "Note updated successfully.", success: true, navigateUrl: '/' });
+        }
+        else {
+            return res.status(404).json({ message: "Note is not available to editable.", success: false });
+        }
+    }
+    catch (error) {
+        console.log("Edit update error", error);
+        return res.status(500).json({ message: "Oops! Couldn't update the note. Please try again.", success: false });
+    }
+})
+
+
 // login 
 app.post("/v1/login", async (req, res) => {
     const { ...data } = req.body;
