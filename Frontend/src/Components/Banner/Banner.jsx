@@ -1,9 +1,9 @@
-import React, { use, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import image from '../../assets/image';
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { loginLogoutRecover } from '../../Utility/LoginLogoutRecover';
 
 export default function Banner(props) {
@@ -15,6 +15,7 @@ export default function Banner(props) {
     const currentId = useSelector(state => state.notesaver.currentUserId);
     const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
     const [formActive, setFormActive] = useState(true);
+    const location=useLocation();
 
     const {
         register,
@@ -32,6 +33,13 @@ export default function Banner(props) {
         setAccount(!account);
         setForget(false);
     }
+
+    useEffect(() => {
+        if (location.state?.toastMessage) {
+            toast.success(location.state.toastMessage);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location])
 
     return (
         <>

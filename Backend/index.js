@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import jwt from 'jsonwebtoken';
 import methodOverride from 'method-override';
+import passport from './middlewares/passport.js';
 
 import saveNote from './Models/NoteSchema.js';
 import noteUser from './Models/UserSchema.js';
@@ -13,6 +14,7 @@ dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 const port = process.env.PORT || 8080;
 const db_url = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/notesaver";
@@ -23,32 +25,31 @@ const corsOption = {
 }
 
 app.use(cors(corsOption));
+
 mongoose.connect(db_url)
     .then(() => console.log("Connected to noteSaver DB"))
     .catch(error => console.log("DB connection fail", error))
+
+// Middleware to protect routes with JWT
+const isAuthenticated = (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err) return next(err);
+        if (!user) {
+            console.log("Invalid or missing token")
+            return res.status(401).json({ message: "Unauthorized user, please login." });
+        }
+        req.user = user;
+        next();
+    })(req, res, next);
+};
 
 app.get("/", async (req, res) => {
     res.send("Home");
 })
 
-const allNotesMiddleware = async (req, res, next) => {
-    const auth = req.headers['authorization'];
-    if (!auth) {
-        console.log("No auth");
-        return;
-    } try {
-        const decodedjwt = jwt.verify(auth, process.env.JWT_SECRET_KEY);
-        req.user = decodedjwt;
-        console.log("req.user : ", req.user);
-        next();
-    } catch (error) {
-        console.log("middle error", error);
-    }
-}
-
 
 // add new note
-app.post("/v1/new-note/:id", async (req, res) => {
+app.post("/v1/new-note/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { ...data } = req.body;
     if (data.title == "" || data.description == "") {
@@ -70,12 +71,15 @@ app.post("/v1/new-note/:id", async (req, res) => {
 })
 
 
-// edit note note
-app.post("/v1/edit-note/:id", async (req, res) => {
+// edit note
+app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { ...data } = req.body;
     const noteCreator = await saveNote.findById(id);
     const userId = noteCreator.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+    }
     if (!data.title || !data.description) {
         return res.status(400).json({ message: "Title or description cannot be empty.", success: false });
     }
@@ -94,7 +98,7 @@ app.post("/v1/edit-note/:id", async (req, res) => {
 
 
 // show all notes
-app.get("/v1/all-notes/:id", async (req, res) => {
+app.get("/v1/all-notes/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     try {
         const notes = await saveNote.find({ userId: id });
@@ -123,8 +127,13 @@ app.get("/v1/view-note/:id", async (req, res) => {
 
 
 // delete note
-app.delete('/v1/delete-note/:id', async (req, res) => {
+app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
+    const noteCreator = await saveNote.findById(id);
+    const userId = noteCreator.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted to delete this note.", success: false });
+    }
     try {
         const deleteNote = await saveNote.findByIdAndDelete(id);
         const removeReference = await noteUser.findByIdAndUpdate(deleteNote.userId, { $pull: { allNotes: id } });
@@ -138,9 +147,13 @@ app.delete('/v1/delete-note/:id', async (req, res) => {
 
 
 // mark as important
-app.post('/v1/mark-important/:id', async (req, res) => {
+app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const noteData = await saveNote.findById(id);
+    const userId = noteData.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+    }
     try {
         const markImp = await saveNote.findByIdAndUpdate(id, { isImportant: !noteData.isImportant }, { new: true });
         const isImp = markImp.isImportant;
@@ -154,9 +167,13 @@ app.post('/v1/mark-important/:id', async (req, res) => {
 
 
 // mark archive...
-app.post("/v1/mark-archive/:id", async (req, res) => {
+app.post("/v1/mark-archive/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const prevArchive = await saveNote.findById(id);
+    const userId = prevArchive.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+    }
     try {
         if (prevArchive.isArchive) {
             const updateArchive = await saveNote.findByIdAndUpdate(id, { isArchive: false, archiveDate: null }, { new: true });
@@ -178,10 +195,14 @@ app.post("/v1/mark-archive/:id", async (req, res) => {
 
 
 // share original note to edit...
-app.post("/v1/share-original/:noteId", async (req, res) => {
+app.post("/v1/share-original/:noteId", isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
+    const findNote = await saveNote.findById(noteId);
+    const userId = findNote.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+    }
     try {
-        const findNote = await saveNote.findById(noteId);
         if (findNote) {
             if (findNote.isEditable === true) {
                 const secretKey = findNote.shareCode;
@@ -203,16 +224,19 @@ app.post("/v1/share-original/:noteId", async (req, res) => {
 
 
 // set share code for note...
-app.post('/v1/set-original-share-code/:noteId', async (req, res) => {
-    console.log("Set share code...");
+app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
+    const getNote = await saveNote.findById(noteId);
+    const userId = getNote.userId;
+    if (userId != req.user._id.toString()) {
+        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+    }
     try {
-        const getNote = await saveNote.findById(noteId);
         if (getNote) {
             if (getNote.isEditable === false) {
                 const updateShareNote = await saveNote.findByIdAndUpdate(noteId, { isEditable: true, shareCode: data.secretKey });
-                return res.status(200).json({ message: `Shared link generated.`,message:'Code saved successfully, go to share option to share note.', isPassSet: true, success: true });
+                return res.status(200).json({ message: `Share link generated.`, message: 'Code saved successfully, go to share option to share note.', isPassSet: true, success: true });
             } else {
                 return res.status(200).json({ message: `Already active for edit.`, success: true });
             }
@@ -229,7 +253,7 @@ app.post('/v1/set-original-share-code/:noteId', async (req, res) => {
 
 
 // compare share code...
-app.post('/v1/verify-original-share-code/:noteId', async (req, res) => {
+app.post('/v1/verify-original-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
     try {
@@ -238,14 +262,14 @@ app.post('/v1/verify-original-share-code/:noteId', async (req, res) => {
             const isAvalEdit = findNote.isEditable;
             if (isAvalEdit) {
                 if (findNote.shareCode === data.secretKey) {
-                    return res.status(200).json({ message: "Note found successfully.",message :'Code verified successfully.', editNote: findNote, isPassSet: false, success: true });
+                    return res.status(200).json({ message: 'Code verified successfully.', editNote: findNote, isPassSet: false, success: true });
                 }
                 else {
                     return res.status(401).json({ message: "Please enter correct key.", success: false });
                 }
             }
             else {
-                return res.status(404).json({ message: "Note is not available to editable.", success: false });
+                return res.status(404).json({ message: "This note is not available for editing.", success: false });
             }
         }
         else {
@@ -260,9 +284,12 @@ app.post('/v1/verify-original-share-code/:noteId', async (req, res) => {
 
 
 // updade original shared data...
-app.post('/v1/update-original-shared/:noteId', async (req, res) => {
+app.post('/v1/update-original-shared/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
+    if (!req.user) {
+        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+    }
     try {
         const findNote = await saveNote.findById(noteId);
         if (findNote) {

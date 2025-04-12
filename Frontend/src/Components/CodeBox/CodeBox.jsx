@@ -11,8 +11,8 @@ export default function CodeBox(props) {
     const noteId = useSelector(state => state.notesaver.sharedNoteId);
     const verifyNoteId = useSelector(state => state.notesaver.noteToVerify);
     const [errorMsg, setErrorMsg] = useState(null);
-
     const dispatch = useDispatch();
+    
     const {
         register,
         handleSubmit,
@@ -20,11 +20,21 @@ export default function CodeBox(props) {
         formState: { errors },
     } = useForm()
 
+    const token = localStorage.getItem("token");
+
     const endPointUrl = props.codeType ? `/v1/verify-original-share-code/${verifyNoteId}` : `/v1/set-original-share-code/${noteId}`
 
     const onSubmit = async (data) => {
+        if (!token) {
+            setErrorMsg("Unauthorized user, please login.");
+            return;
+        }
         try {
-            const response = await axios.post(`${backendUrl}${endPointUrl}`, data);
+            const response = await axios.post(`${backendUrl}${endPointUrl}`, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data.success == true) {
                 setErrorMsg(null);
                 dispatch(setShareEditCodeBox(false));
@@ -32,19 +42,14 @@ export default function CodeBox(props) {
                     dispatch(setEditNoteData(response.data.editNote));
                 } else {
                     dispatch(setEditNoteData(null));
+                    toast.success(response.data.message);
                 }
             }
-            toast.success(response.data.message);
         }
         catch (error) {
-            if (error.status == '401') {
-                setErrorMsg(error.response.data.message);
-            } else if (error.status == '404') {
-                setErrorMsg(error.response.data.message);
-            } else {
-                console.log("Error", error)
-                setErrorMsg("Something went wrong.");
-            }
+            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+            setErrorMsg(errorMsg);
+            console.log("Something went wrong.", error);
         }
         finally {
             dispatch(setDisplayCodeBox(false));
@@ -83,7 +88,6 @@ export default function CodeBox(props) {
                     </div>
                 </div>
             </div>
-
         </>
     )
 }

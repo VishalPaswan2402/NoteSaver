@@ -1,19 +1,21 @@
 import React from 'react'
 import image from '../../assets/image';
 import "./Navbar.css"
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsAuthenticate } from '../../ReduxSlice/SliceFunction';
 
 export default function Navbar(props) {
     const dispatch = useDispatch();
+    const navigate=useNavigate();
     const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
     const currId = useSelector(state => state.notesaver.currentUserId);
 
     const handleLogOut = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('currentId');
+        localStorage.setItem('logout', Date.now()); // ⚠️ very important
         dispatch(setIsAuthenticate(false));
+        navigate('/');
     }
 
     return (

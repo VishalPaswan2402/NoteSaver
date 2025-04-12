@@ -28,9 +28,19 @@ export default function EditShare(props) {
         }
     });
 
+    const token = localStorage.getItem('token');
+
     const onSubmit = async (data) => {
+        if (!token) {
+            navigate('/');
+            return;
+        }
         try {
-            const response = await axios.post(`${backendUrl}/v1/update-original-shared/${verifyNoteId.id}`, data);
+            const response = await axios.post(`${backendUrl}/v1/update-original-shared/${verifyNoteId.id}`, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data.success == true) {
                 toast.success(response.data.message);
                 navigate('/');
@@ -42,8 +52,8 @@ export default function EditShare(props) {
         }
         catch (error) {
             console.log(error);
-            toast.error("Error edit");
-            toast.error(error.response.data.message);
+            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+            toast.error(errorMsg);
             navigate('/');
         }
     }
@@ -69,7 +79,7 @@ export default function EditShare(props) {
                 <form onSubmit={handleSubmit(onSubmit)} id='input-container' className='grid max-w-2xl m-auto gap-4 mt-2'>
                     <input {...register("title")} type='text' placeholder='Enter title' className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 text-[#B03052] rounded-sm font-para text-2xl font-semibold'></input>
                     <textarea {...register("description")} id='note-area' type='text' placeholder='Enter description' className={`outline-2 outline-[#D76C82] text-[#B03052] focus:outline-[#3D0301] p-2 rounded-sm h-98 resize-none overflow-y-auto font-para text-2xl`}></textarea>
-                    <button type='submit' className={`border-2 rounded-sm p-1 mb-1 cursor-pointer transition-all duration-200 bg-[#D76C82] text-[#EBE8DB] hover:bg-[#B03052] hover:border-[#3D0301] border-[#B03052]`}>Btn</button>
+                    <button type='submit' className={`border-2 rounded-sm p-1 mb-1 cursor-pointer transition-all duration-200 bg-[#D76C82] text-[#EBE8DB] hover:bg-[#B03052] hover:border-[#3D0301] border-[#B03052]`}>Update Original</button>
                 </form>
             </div>
         </>

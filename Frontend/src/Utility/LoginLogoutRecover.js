@@ -10,23 +10,16 @@ export const loginLogoutRecover = async (endPoint, data, dispatch, navigate, set
         if (response.data.success == true) {
             dispatch(setCurrentUserId(response.data.logUser._id));
             localStorage.setItem("token", response.data.token);
-            localStorage.setItem("currentId", response.data.logUser._id);
-            toast.success("Logged in...");
-            navigate(`/${response.data.navigateUrl}`);
+            navigate(`${response.data.navigateUrl}`, {
+                state: { toastMessage: response.data.message },
+            });
         }
         else {
             toast.error("Fill all data.");
         }
     } catch (error) {
-        if (error.status == 400) {
-            toast.error(error.response.data.message);
-            return console.log(error.response.data.message);
-        }
-        else if (error.status == 401) {
-            toast.error(error.response.data.message);
-            return console.log(error.response.data.message);
-        }
-        toast.error("Internal server error.");
+        const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+        toast.error(errorMsg);
         return console.log(endPoint, "Error: ", error);
     }
     finally {

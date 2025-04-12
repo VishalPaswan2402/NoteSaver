@@ -3,7 +3,7 @@ import NoteList from '../../Components/NoteList/NoteList';
 import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { handleMarkNote, handleOnArchiveNote, handleOnDeleteNote, setAllNotes, setFilterNoteCount, setFilterNoteType, setFilterOptionType } from '../../ReduxSlice/SliceFunction';
 import FilterSearch from '../../Components/FilterSearch/FilterSearch';
 import { filterAndSortedNote } from '../../Utility/FilterAndSortedNote';
@@ -18,11 +18,21 @@ export default function HomePage(props) {
     const location = useLocation();
     const dispatch = useDispatch();
     const searchValue = useSelector(state => state.notesaver.searchQuerys);
+    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAllNotes = async () => {
+            if (!token) {
+                navigate('/');
+                return;
+            }
             try {
-                const response = await axios.get(`${backendUrl}/v1/all-notes/${userId}`);
+                const response = await axios.get(`${backendUrl}/v1/all-notes/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 dispatch(setAllNotes(response.data.notes));
                 dispatch(setFilterNoteType("Non-Archieve"));
                 dispatch(setFilterOptionType("Newest First"));
@@ -48,6 +58,7 @@ export default function HomePage(props) {
     useEffect(() => {
         if (location.state?.toastMessage) {
             toast.success(location.state.toastMessage);
+            navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location])
 

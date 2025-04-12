@@ -11,6 +11,7 @@ export default function ShareOption(props) {
     const dispatch = useDispatch();
     const sharedNoteId = useSelector(state => state.notesaver.sharedNoteId);
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const handleShareCloneOption = () => {
         dispatch(setSharedNoteId(null));
@@ -25,8 +26,16 @@ export default function ShareOption(props) {
     }
 
     const shareOriginalNote = async () => {
+        if (!token) {
+            navigate('/');
+            return;
+        }
         try {
-            const response = await axios.post(`${backendUrl}/v1/share-original/${sharedNoteId}`);
+            const response = await axios.post(`${backendUrl}/v1/share-original/${sharedNoteId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data.isActiveNote === true) {
                 dispatch(setSharedNoteId(null));
                 copyURLtoClipboard(response.data.message, response.data.shareOriginalUrl);
@@ -36,8 +45,9 @@ export default function ShareOption(props) {
             }
         }
         catch (error) {
+            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+            toast.error(errorMsg);
             console.log("Share original error : ", error);
-            toast.error("Something went wrong.");
         }
         finally {
             dispatch(setDisplayShareOption());

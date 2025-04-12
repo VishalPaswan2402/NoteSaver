@@ -2,16 +2,26 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { handleOnDeleteNote, setAlertBox } from "../ReduxSlice/SliceFunction";
 
+const token = localStorage.getItem('token');
 const backendUrl = "http://localhost:8080";
 
-export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn) => {
+export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn,navigate) => {
+    if (!token) {
+        navigate('/');
+        return;
+    }
     try {
-        const response = await axios.delete(`${backendUrl}/v1/delete-note/${noteId}`);
+        const response = await axios.delete(`${backendUrl}/v1/delete-note/${noteId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         dispatch(handleOnDeleteNote(noteId));
         toast.success(response.data.message);
     }
     catch (error) {
-        toast.error("Something went wrong.");
+        const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+        toast.error(errorMsg);
         console.log("Delete error", error);
     }
     finally {

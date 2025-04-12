@@ -12,11 +12,10 @@ import { useEffect, useState } from 'react';
 import { setCurrentUserId, setIsAuthenticate } from './ReduxSlice/SliceFunction';
 import AlertOption from './Components/AlertOption/AlertOption';
 import ShareOption from './Components/ShareOption/ShareOption';
-// import EnterCode from './Pages/EnterCode/EnterCode';
 import ShareLink from './Components/ShareLink/ShareLink';
-// import ShareEdit from './Components/ShareEdit/ShareEdit';
 import CodeBox from './Components/CodeBox/CodeBox';
 import EditShare from './Pages/EditShare/EditShare';
+import { jwtDecode } from "jwt-decode";
 
 function App() {
   const navigate = useNavigate();
@@ -30,20 +29,36 @@ function App() {
   const showLinkBox = useSelector(state => state.notesaver.displayLinkBox);
   const shareid = useSelector(state => state.notesaver.sharedNoteId);
   const shareEditBox = useSelector(state => state.notesaver.shareEditCodeBox);
-
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const currId = localStorage.getItem('currentId');
     if (token) {
+      const decoded = jwtDecode(token);
+      const currId = decoded.id;
       dispatch(setIsAuthenticate(true));
       dispatch(setCurrentUserId(currId));
-    } else {
-      dispatch(setIsAuthenticate(false));
-      // navigate('/');
     }
-  }, [navigate, isAuthenticated])
+    else {
+      dispatch(setIsAuthenticate(false));
+    }
+    setAuthChecked(true);
+  }, [navigate]);
 
+
+  useEffect(() => {
+    const syncLogout = (event) => {
+      if (event.key === 'logout') {
+        localStorage.removeItem('token');
+        dispatch(setIsAuthenticate(false));
+        navigate('/');
+      }
+    };
+    window.addEventListener('storage', syncLogout);
+    return () => window.removeEventListener('storage', syncLogout);
+  }, []);
+
+  if (!authChecked) return null; // loader
 
   return (
     <>
@@ -51,7 +66,7 @@ function App() {
       {showCloneShare ? <ShareOption /> : null}
       {showCodeBox ? <CodeBox /> : null}
       {showLinkBox ? <ShareLink /> : null}
-      {shareEditBox ? <CodeBox codeType={'shareEdit'}/> : null }
+      {shareEditBox ? <CodeBox codeType={'shareEdit'} /> : null}
       <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
         <Navbar />
         <div className='pt-14'></div>
@@ -61,6 +76,7 @@ function App() {
           <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
           <Route path="/v1/view-note/:id" element={<ViewPage />} />
           <Route path="/v1/write-original-file/:id" element={<EditShare />} />
+          {/* <Route path="/v1/view-share-file/:id" element={<ShareView />} /> */}
           <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
           {/* <Route path="/v1/enter-share-code/:id" element={isAuthenticated ? <EnterCode /> : <Navigate to="/" />} /> */}
           {/* <Route path="/v1/code-page/:id" element={<EnterCode />} /> */}

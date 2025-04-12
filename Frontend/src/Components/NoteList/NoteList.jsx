@@ -19,7 +19,7 @@ export default function NoteList(props) {
 
     const markAsImportant = async (id, onMark, isArch) => {
         if (isArch) {
-            toast.error("Please restore your note.");
+            toast.error("Please restore your note first.");
             return;
         }
         await markImportant(id, navigate, onMark);

@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from 'react-redux'
 import { toast, ToastContainer } from 'react-toastify'
 import { addUpdateNote } from '../../Utility/AddUpdateNote'
-import { setAlertBox, setCurrentNoteArchive, setCurrentUserId, setViewPageDelete } from '../../ReduxSlice/SliceFunction'
+import { setAlertBox, setCurrentNoteArchive, setCurrentUserId, setDisplayLinkBox, setSharedNoteId, setViewPageDelete } from '../../ReduxSlice/SliceFunction'
+import axios from 'axios'
 
 export default function AddNew(props) {
+    const backendUrl = "http://localhost:8080";
     const frontendUrl = `http://localhost:5173`;
     const navigate = useNavigate();
     const editNoteId = props.editNoteId;
@@ -15,6 +17,7 @@ export default function AddNew(props) {
     const currNoteId = useParams();
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
+    const [noteCreator, setNoteCreator] = useState(null);
 
     const {
         register,
@@ -43,11 +46,23 @@ export default function AddNew(props) {
     }
 
     const copyURLtoClipboard = (id) => {
-        const copyUrl = `${frontendUrl}/v1/view-note/${id}`;
-        navigator.clipboard.writeText(copyUrl)
-            .then(() => toast.success("URL copied to clipboard."))
-            .catch(err => toast.error("Something went wrong"));
+        dispatch(setSharedNoteId(id));
+        dispatch(setDisplayLinkBox());
     }
+
+    useEffect(() => {
+        const fetchNote = async () => {
+            try {
+                const response = await axios.get(`${backendUrl}/v1/view-note/${currNoteId.id}`);
+                setNoteCreator(response.data.viewNote.userId);
+            } catch (error) {
+                console.error("Error fetching note:", error);
+            }
+        }
+        if (currNoteId?.id) {
+            fetchNote();
+        }
+    }, [currNoteId]);
 
     return (
         <>
@@ -58,7 +73,7 @@ export default function AddNew(props) {
                     <input {...register("title")} type='text' placeholder='Enter title' className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 text-[#B03052] rounded-sm font-para text-2xl font-semibold' defaultValue={props.title} disabled={!props.edit ? true : !formActive}></input>
                     <textarea {...register("description")} id='note-area' type='text' placeholder='Enter description' className={`outline-2 outline-[#D76C82] text-[#B03052] focus:outline-[#3D0301] p-2 rounded-sm ${!isAuthenticated ? 'h-110 mb-2' : 'h-98'} resize-none overflow-y-auto font-para text-2xl`} defaultValue={props.disc} disabled={!props.edit ? true : !formActive}></textarea>
                     {
-                        props.edit
+                        (props.edit)
                             ?
                             (
                                 <button disabled={!formActive} type='submit' className={`border-2 rounded-sm p-1 mb-1 cursor-pointer transition-all duration-200 bg-[#D76C82] text-[#EBE8DB] hover:bg-[#B03052] hover:border-[#3D0301] border-[#B03052]
@@ -80,7 +95,7 @@ export default function AddNew(props) {
                     }
                 </form>
                 {
-                    isAuthenticated
+                    (isAuthenticated && userId == noteCreator)
                         ?
                         (
                             !props.edit
