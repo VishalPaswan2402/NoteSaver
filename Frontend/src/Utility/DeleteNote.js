@@ -2,10 +2,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { handleOnDeleteNote, setAlertBox } from "../ReduxSlice/SliceFunction";
 
-const token = localStorage.getItem('token');
 const backendUrl = "http://localhost:8080";
 
 export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn,navigate) => {
+    const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
         return;

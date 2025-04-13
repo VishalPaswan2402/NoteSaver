@@ -147,7 +147,7 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
 
 
 // mark as important
-app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
+app.post('/v1/mark-important/:id',isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const noteData = await saveNote.findById(id);
     const userId = noteData.userId;
@@ -316,7 +316,7 @@ app.post("/v1/login", async (req, res) => {
         try {
             const logUser = await noteUser.findOne({ username: data.username, password: data.password });
             if (logUser) {
-                const token = jwt.sign({ email: logUser.email, id: logUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "24h" });
+                const token = jwt.sign({ email: logUser.email, username: logUser.username, id: logUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "24h" });
                 return res.status(200).json({ message: "Login successfully.", logUser, token, navigateUrl: `v1/all-notes/${logUser._id}`, success: true });
             } else {
                 return res.status(401).json({ message: "Invalid credentials. Please try again.", success: false })
@@ -358,6 +358,27 @@ app.post("/v1/signup", async (req, res) => {
             console.log("Signup error : ", error);
             return res.status(500).json({ message: "Internal server error.", success: false });
         }
+    }
+})
+
+
+// fetch user data...
+app.get('/v1/userdata/:id',isAuthenticated, async (req, res) => {
+    const { id } = req.params;
+    if (id != req.user._id.toString()) {
+        return res.status(401).json({ message: "Invalid request.", success: false });
+    }
+    try {
+        const userData = await noteUser.findById(id);
+        if (userData) {
+            return res.status(200).json({ userData: userData, success: true });
+        }
+        else {
+            return res.status(404).json({ message: "No user found", success: false });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Internal server error.", success: false });
     }
 })
 

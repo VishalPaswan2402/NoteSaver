@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const token = localStorage.getItem('token');
 const backendUrl = "http://localhost:8080";
 
 export const fetchNote = async (id, setNoteView) => {
+    const token = localStorage.getItem('token');
     try {
         const response = await axios.get(`${backendUrl}/v1/view-note/${id}`, {
             headers: {

@@ -12,3 +12,7 @@
 #navbar {
     box-shadow: 1px 1px 10px #3D0301;
 }
+.moreOption:hover .moreOptionIcon{
+    color: #3d0301b5;
+    background-color: #EBE8DB;
+}

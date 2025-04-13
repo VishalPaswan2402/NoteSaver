@@ -1,10 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const token = localStorage.getItem('token');
+
 const backendUrl = "http://localhost:8080";
 
 export const addUpdateNote = async (endpoint, data, navigate, setFormActive) => {
+    const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
         return;

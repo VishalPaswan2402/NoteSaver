@@ -20,11 +20,10 @@ export default function CodeBox(props) {
         formState: { errors },
     } = useForm()
 
-    const token = localStorage.getItem("token");
-
     const endPointUrl = props.codeType ? `/v1/verify-original-share-code/${verifyNoteId}` : `/v1/set-original-share-code/${noteId}`
 
     const onSubmit = async (data) => {
+        const token = localStorage.getItem("token");
         if (!token) {
             setErrorMsg("Unauthorized user, please login.");
             return;

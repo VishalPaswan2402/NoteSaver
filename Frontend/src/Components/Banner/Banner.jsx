@@ -15,7 +15,7 @@ export default function Banner(props) {
     const currentId = useSelector(state => state.notesaver.currentUserId);
     const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
     const [formActive, setFormActive] = useState(true);
-    const location=useLocation();
+    const location = useLocation();
 
     const {
         register,
@@ -45,12 +45,12 @@ export default function Banner(props) {
         <>
             <ToastContainer autoClose={1500} position="top-center" />
             <div className='bg-[#EBE8DB] banner-container flex items-center justify-evenly'>
-                <div className='w-1/2 flex items-center justify-center'>
+                <div className='w-[50%] flex items-center justify-center'>
                     <img className='h-143 w-full' src={image.book}></img>
                 </div>
 
-                <div className='w-1/2 flex justify-center'>
-                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-10 rounded-lg shadow-2xl shadow-[#D76C82]'>
+                <div className='w-[50%] flex justify-center'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-5 rounded-lg shadow-2xl shadow-[#D76C82]'>
                         <h1 className='text-center text-2xl font-bold font-amarante text-[#B03052]'>
                             {
                                 forget
@@ -64,26 +64,26 @@ export default function Banner(props) {
                                         "Signup Form"
                             }
                         </h1>
-                        <input disabled={!formActive} type='text' placeholder='Enter username' {...register("username")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]' ></input>
+                        <input disabled={!formActive} type='text' placeholder='Username' {...register("username")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]' ></input>
                         {
                             forget
                                 ?
-                                <input disabled={!formActive} type='email' placeholder='Enter email' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]'></input>
+                                <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
                                 :
                                 account
                                     ?
-                                    <input disabled={!formActive} type='password' placeholder='Enter password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]'></input>
+                                    <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
                                     :
                                     (
                                         <>
-                                            <input disabled={!formActive} type='text' placeholder='Enter full name' {...register("fullname")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]' ></input>
-                                            <input disabled={!formActive} type='email' placeholder='Enter email' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]'></input>
-                                            <input disabled={!formActive} type='password' placeholder='Enter password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]'></input>
-                                            <input disabled={!formActive} type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 rounded-sm font-para text-2xl text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='text' placeholder='Full name' {...register("fullname")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]' ></input>
+                                            <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
                                         </>
                                     )
                         }
-                        <button disabled={!formActive} type='submit' className={`border-2 text-[#EBE8DB] rounded-sm p-1 cursor-pointer hover:text-white font-para text-2xl
+                        <button disabled={!formActive} type='submit' className={`border-2 text-center text-[#EBE8DB] rounded-sm p-1 cursor-pointer hover:text-white font-para text-[20px]
                             ${formActive
                                 ? "bg-[#D76C82] hover:bg-[#B03052] border-[#B03052] hover:border-[#3D0301] "
                                 : "bg-[#B03052] border-[#3D0301] text-white cursor-wait"
@@ -110,23 +110,22 @@ export default function Banner(props) {
                                 ?
                                 null
                                 :
-                                <div>
-                                    <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-2xl' onClick={changeForm} >
+                                <div className='flex justify-between'>
+                                    <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-[20px]' onClick={changeForm} >
                                         {
                                             account
                                                 ?
-                                                "Join us now – it's free !"
+                                                "Join us – it's free !"
                                                 :
-                                                "Already have an account ?"
+                                                "Existing user ?"
                                         }
                                     </p>
-                                    <br></br>
                                     {
                                         forget
                                             ?
                                             null
                                             :
-                                            <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-2xl' onClick={() => setForget(!forget)} >Forget password ?</p>
+                                            <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-[20px]' onClick={() => setForget(!forget)} >Forget password ?</p>
                                     }
                                 </div>
                         }

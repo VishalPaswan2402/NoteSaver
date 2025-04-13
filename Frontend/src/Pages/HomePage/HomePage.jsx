@@ -18,11 +18,11 @@ export default function HomePage(props) {
     const location = useLocation();
     const dispatch = useDispatch();
     const searchValue = useSelector(state => state.notesaver.searchQuerys);
-    const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAllNotes = async () => {
+            const token = localStorage.getItem('token');
             if (!token) {
                 navigate('/');
                 return;

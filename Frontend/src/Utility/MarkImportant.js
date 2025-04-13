@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const token = localStorage.getItem('token');
 const backendUrl = "http://localhost:8080";
 
 export const markImportant = async (id, navigate, onMark) => {
+    const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
         return;
@@ -20,9 +20,11 @@ export const markImportant = async (id, navigate, onMark) => {
             navigate(`${response.data.navigateUrl}`, {
                 state: { toastMessage: response.data.message }
             });
+            console.log(response);
         }
         else {
             toast.error("Something went wrong.");
+            console.log(response);
         }
     }
     catch (error) {

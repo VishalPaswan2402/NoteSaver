@@ -4,6 +4,7 @@ import { act } from 'react';
 export const SliceFunction = createSlice({
     name: 'notesaver',
     initialState: {
+        userName: null,
         isAuthenticate: false,
         currentUserId: null,
         isNewNote: true,
@@ -29,8 +30,12 @@ export const SliceFunction = createSlice({
         shareEditCodeBox: false,
         noteToVerify: null,
         editNoteData: [],
+        profileViewBox: false
     },
     reducers: {
+        setUserName: (state, action) => {
+            state.userName = action.payload;
+        },
         setAllNotes: (state, action) => {
             state.allNotes = action.payload;
         },
@@ -114,12 +119,16 @@ export const SliceFunction = createSlice({
         },
         setEditNoteData: (state, action) => {
             state.editNoteData = action.payload;
+        },
+        setProfileViewBox: (state, action) => {
+            state.profileViewBox = action.payload;
         }
     },
 })
 
 // Action creators are generated for each case reducer function
 export const {
+    setUserName,
     setAllNotes,
     setIsAuthenticate,
     setCurrentUserId,
@@ -144,7 +153,8 @@ export const {
     setDisplayLinkBox,
     setShareEditCodeBox,
     setNoteIdToVerify,
-    setEditNoteData
+    setEditNoteData,
+    setProfileViewBox
 } = SliceFunction.actions
 
 export default SliceFunction.reducer

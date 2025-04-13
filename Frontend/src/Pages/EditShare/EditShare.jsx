@@ -28,9 +28,8 @@ export default function EditShare(props) {
         }
     });
 
-    const token = localStorage.getItem('token');
-
     const onSubmit = async (data) => {
+        const token = localStorage.getItem('token');
         if (!token) {
             navigate('/');
             return;

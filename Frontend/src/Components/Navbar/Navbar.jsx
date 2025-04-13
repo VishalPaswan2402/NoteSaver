@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import image from '../../assets/image';
 import "./Navbar.css"
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsAuthenticate } from '../../ReduxSlice/SliceFunction';
+import { setIsAuthenticate, setProfileViewBox } from '../../ReduxSlice/SliceFunction';
 
 export default function Navbar(props) {
     const dispatch = useDispatch();
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
     const currId = useSelector(state => state.notesaver.currentUserId);
+    const userName = useSelector(state => state.notesaver.userName);
+    const [moreOption, setMoreOption] = useState(false);
 
     const handleLogOut = () => {
         localStorage.removeItem('token');
@@ -18,11 +20,16 @@ export default function Navbar(props) {
         navigate('/');
     }
 
+    const showProfile = () => {
+        dispatch(setProfileViewBox(true));
+        setMoreOption(false);
+    }
+
     return (
         <>
-            <div id='navbar' className='flex place-content-between p-3 bg-[#B03052] z-100 fixed t-0 w-screen'>
+            <div id='navbar' className='flex place-content-between p-2 bg-[#B03052] z-100 fixed t-0 w-screen'>
                 <div id='left-navbar'>
-                    <div id='left-option' className='flex pl-6 gap-3'>
+                    <div id='left-option' className='flex pl-6 gap-3 pt-1'>
                         <div className="site-logo logo-style" style={{ backgroundImage: `url(${image.logo})` }} ></div>
                         {
                             isAuthenticated
@@ -41,8 +48,31 @@ export default function Navbar(props) {
                         isAuthenticated
                             ?
                             <>
-                                <div className='bg-[#EBE8DB] mr-4 h-8 w-8 text-center rounded-full pt-0.5 text-[#B03052]'><i className="fa-solid fa-user"></i></div>
-                                <div onClick={handleLogOut} id='right-navbar' className='mr-7 cursor-pointer bg-[#EBE8DB] pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-[#3D0301] hover:text-white font-amarante text-[#B03052]'>LogOut</div>
+                                <div className="relative z-50 font-para text-xl w-35 mr-7">
+                                    <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-md hover:border-[#3d0301b5] hover:bg-[#3d0301b5] hover:text-[#EBE8DB] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption">
+                                        <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>UN</div>
+                                        {
+                                            userName.length > 8
+                                                ?
+                                                <>{userName.slice(0, 9)}...</>
+                                                :
+                                                userName
+                                        }
+                                    </button>
+                                    {
+                                        moreOption
+                                            ?
+                                            (
+                                                <ul className="absolute left-0 w-full bg-[#EBE8DB] border border-gray-300 shadow-lg shadow-[#D76C82] rounded-md mt-1">
+                                                    <li onClick={showProfile} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-user pl-1 pr-2"></i>Profile</li>
+                                                    <li className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-circle-info pl-1 pr-2"></i>About</li>
+                                                    <li onClick={handleLogOut} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-right-from-bracket pl-1 pr-2"></i>Log Out</li>
+                                                </ul>
+                                            )
+                                            :
+                                            null
+                                    }
+                                </div>
                             </>
                             :
                             <a href='/'>

@@ -9,13 +9,14 @@ import EditPage from './Pages/EditPage/EditPage';
 import { useDispatch, useSelector } from 'react-redux';
 import LandingPage from './Pages/LandingPage/LandingPage';
 import { useEffect, useState } from 'react';
-import { setCurrentUserId, setIsAuthenticate } from './ReduxSlice/SliceFunction';
+import { setCurrentUserId, setIsAuthenticate, setUserName } from './ReduxSlice/SliceFunction';
 import AlertOption from './Components/AlertOption/AlertOption';
 import ShareOption from './Components/ShareOption/ShareOption';
 import ShareLink from './Components/ShareLink/ShareLink';
 import CodeBox from './Components/CodeBox/CodeBox';
 import EditShare from './Pages/EditShare/EditShare';
 import { jwtDecode } from "jwt-decode";
+import ProfileView from './Components/ProfileView/ProfileView';
 
 function App() {
   const navigate = useNavigate();
@@ -23,12 +24,11 @@ function App() {
   const isAuthenticated = useSelector(state => state.notesaver.isAuthenticate);
   const currentId = useSelector(state => state.notesaver.currentUserId);
   const showAlert = useSelector(state => state.notesaver.showAlertBox);
-  const noteCount = useSelector(state => state.notesaver.allNotes);
   const showCloneShare = useSelector(state => state.notesaver.displayShareOption);
   const showCodeBox = useSelector(state => state.notesaver.displayCodeBox);
   const showLinkBox = useSelector(state => state.notesaver.displayLinkBox);
-  const shareid = useSelector(state => state.notesaver.sharedNoteId);
   const shareEditBox = useSelector(state => state.notesaver.shareEditCodeBox);
+  const profileViewBox = useSelector(state => state.notesaver.profileViewBox);
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ function App() {
     if (token) {
       const decoded = jwtDecode(token);
       const currId = decoded.id;
+      dispatch(setUserName(decoded.username));
       dispatch(setIsAuthenticate(true));
       dispatch(setCurrentUserId(currId));
     }
@@ -43,7 +44,7 @@ function App() {
       dispatch(setIsAuthenticate(false));
     }
     setAuthChecked(true);
-  }, [navigate]);
+  }, [navigate,isAuthenticated]);
 
 
   useEffect(() => {
@@ -67,7 +68,8 @@ function App() {
       {showCodeBox ? <CodeBox /> : null}
       {showLinkBox ? <ShareLink /> : null}
       {shareEditBox ? <CodeBox codeType={'shareEdit'} /> : null}
-      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
+      {profileViewBox ? <ProfileView /> : null}
+      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox || profileViewBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
         <Navbar />
         <div className='pt-14'></div>
         <Routes>

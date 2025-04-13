@@ -11,7 +11,6 @@ export default function ShareOption(props) {
     const dispatch = useDispatch();
     const sharedNoteId = useSelector(state => state.notesaver.sharedNoteId);
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
 
     const handleShareCloneOption = () => {
         dispatch(setSharedNoteId(null));
@@ -26,6 +25,7 @@ export default function ShareOption(props) {
     }
 
     const shareOriginalNote = async () => {
+        const token = localStorage.getItem('token');
         if (!token) {
             navigate('/');
             return;

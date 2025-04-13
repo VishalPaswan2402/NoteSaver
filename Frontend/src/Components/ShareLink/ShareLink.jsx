@@ -45,8 +45,8 @@ export default function ShareLink(props) {
                 <div className="bg-[#B03052] border-2 border-[#EBE8DB] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-3 w-70 rounded-md shadow-2xl shadow-gray-600">
                     <p className='text-lg text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-share-nodes text-4xl p-1 text-[#EBE8DB]"></i><br></br>Share your notes with others.</p>
                     <div className={`flex items-center gap-2 mt-2`}>
-                        <button onClick={readFileURL} className={`bg-[#3773f4] border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-[#373af4] border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Read file</button>
-                        <button onClick={writeOriginalFileURL} className="bg-red-400 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-red-600 border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit original</button>
+                        <button onClick={readFileURL} className={`bg-[#3773f4] border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-[#373af4] border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Read only</button>
+                        <button onClick={writeOriginalFileURL} className="bg-red-400 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-red-600 border-2 rounded-sm w-37 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit original</button>
                         <button className="bg-yellow-300 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-yellow-600 border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit clone</button>
                     </div>
                     <div className='justify-center mt-3 mb-2'>

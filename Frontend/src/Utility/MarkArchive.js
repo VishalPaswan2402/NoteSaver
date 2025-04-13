@@ -2,10 +2,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { handleOnArchiveNote, setAlertBox } from "../ReduxSlice/SliceFunction";
 
-const token = localStorage.getItem('token');
 const backendUrl = "http://localhost:8080";
 
 export const markArchive = async (noteId, setIsArchive, dispatch, setActiveBtn, setArchiveText,navigate) => {
+    const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
         return;
