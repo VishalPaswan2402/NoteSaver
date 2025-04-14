@@ -32,7 +32,7 @@ export default function FilterSearch(props) {
 
     return (
         <>
-            <div className='flex w-200 m-auto mt-4 justify-between flex-wrap'>
+            <div className='flex w-200 m-auto mt-4 mb-4 justify-between flex-wrap'>
 
                 <div className='w-3/9 flex justify-between'>
                     <input onChange={(e) => setQuery(e.target.value)} placeholder='Search notes...' className='focus:outline-[#3D0301] border-2 w-full p-2 font-para text-xl rounded-lg border-[#D76C82] text-[#B03052]'></input>

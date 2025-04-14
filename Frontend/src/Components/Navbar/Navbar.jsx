@@ -17,11 +17,17 @@ export default function Navbar(props) {
         localStorage.removeItem('token');
         localStorage.setItem('logout', Date.now()); // ⚠️ very important
         dispatch(setIsAuthenticate(false));
+        setMoreOption(false);
         navigate('/');
     }
 
     const showProfile = () => {
         dispatch(setProfileViewBox(true));
+        setMoreOption(false);
+    }
+
+    const navgiteAbout = () => {
+        navigate('/v1/about');
         setMoreOption(false);
     }
 
@@ -39,7 +45,10 @@ export default function Navbar(props) {
                                     <NavLink to={`/v1/add-new/${currId}`} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>New-Note</NavLink>
                                 </div>
                                 :
-                                <p className='text-[#EBE8DB] font-amarante'>Note Saver</p>
+                                <>
+                                    <NavLink to={'/'} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>NoteDrive</NavLink>
+                                    <NavLink to={'/v1/about'} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>About</NavLink>
+                                </>
                         }
                     </div>
                 </div>
@@ -50,7 +59,7 @@ export default function Navbar(props) {
                             <>
                                 <div className="relative z-50 font-para text-xl w-35 mr-7">
                                     <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-md hover:border-[#3d0301b5] hover:bg-[#3d0301b5] hover:text-[#EBE8DB] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption">
-                                        <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>UN</div>
+                                        <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>{userName.length > 1 ? userName.slice(0, 2).toUpperCase() : userName.toUpperCase()}</div>
                                         {
                                             userName.length > 8
                                                 ?
@@ -65,7 +74,8 @@ export default function Navbar(props) {
                                             (
                                                 <ul className="absolute left-0 w-full bg-[#EBE8DB] border border-gray-300 shadow-lg shadow-[#D76C82] rounded-md mt-1">
                                                     <li onClick={showProfile} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-user pl-1 pr-2"></i>Profile</li>
-                                                    <li className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-circle-info pl-1 pr-2"></i>About</li>
+                                                    <li onClick={navgiteAbout} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-circle-info pl-1 pr-2"></i>About</li>
+                                                    <li className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-sun pl-1 pr-2"></i>Mode</li>
                                                     <li onClick={handleLogOut} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-right-from-bracket pl-1 pr-2"></i>Log Out</li>
                                                 </ul>
                                             )

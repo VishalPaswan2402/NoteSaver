@@ -17,6 +17,7 @@ import CodeBox from './Components/CodeBox/CodeBox';
 import EditShare from './Pages/EditShare/EditShare';
 import { jwtDecode } from "jwt-decode";
 import ProfileView from './Components/ProfileView/ProfileView';
+import AboutPage from './Pages/AboutPage/AboutPage';
 
 function App() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ function App() {
       dispatch(setIsAuthenticate(false));
     }
     setAuthChecked(true);
-  }, [navigate,isAuthenticated]);
+  }, [navigate, isAuthenticated]);
 
 
   useEffect(() => {
@@ -81,7 +82,7 @@ function App() {
           {/* <Route path="/v1/view-share-file/:id" element={<ShareView />} /> */}
           <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
           {/* <Route path="/v1/enter-share-code/:id" element={isAuthenticated ? <EnterCode /> : <Navigate to="/" />} /> */}
-          {/* <Route path="/v1/code-page/:id" element={<EnterCode />} /> */}
+          <Route path="/v1/about" element={<AboutPage />} />
           <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
         </Routes>
         <Footer />
