@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux'
 import { setDisplayLinkBox, setSharedNoteId } from '../../ReduxSlice/SliceFunction';
+import axios from 'axios';
 
 export default function ShareLink(props) {
-    const dispatch = useDispatch();
+    const backendUrl = "http://localhost:8080";
     const frontendUrl = `http://localhost:5173`;
+    const dispatch = useDispatch();
     const shareId = useSelector(state => state.notesaver.sharedNoteId);
 
     const hideShareLinkOption = () => {
@@ -16,7 +18,7 @@ export default function ShareLink(props) {
     const readFileURL = () => {
         const copyUrl = `${frontendUrl}/v1/view-note/${shareId}`;
         navigator.clipboard.writeText(copyUrl)
-            .then(() => toast.success(`URL copied to clipboard.`))
+            .then(() => toast.success(`Yay! URL copied to your clipboard.`))
             .catch(err => toast.error("Something went wrong"));
         dispatch(setSharedNoteId(null));
         dispatch(setDisplayLinkBox());
@@ -25,19 +27,42 @@ export default function ShareLink(props) {
     const writeOriginalFileURL = () => {
         const copyUrl = `${frontendUrl}/v1/write-original-file/${shareId}`;
         navigator.clipboard.writeText(copyUrl)
-            .then(() => toast.success(`URL copied to clipboard.`))
+            .then(() => toast.success(`Yay! URL copied to your clipboard.`))
             .catch(err => toast.error("Something went wrong"));
         dispatch(setSharedNoteId(null));
         dispatch(setDisplayLinkBox());
     }
 
-    // const writeCloneFileURL = (originalId,cloneId) => {
-    //     const copyUrl = `${frontendUrl}/v1/write-clone-file/${originalId}/${cloneId}`;
-    //     console.log("COpy url : ", copyUrl);
-    //     navigator.clipboard.writeText(copyUrl)
-    //         .then(() => toast.success(`URL copied to clipboard.`))
-    //         .catch(err => toast.error("Something went wrong"));
-    // }
+    const writeCloneFileURL = (cloneUrl) => {
+        const copyUrl = `${frontendUrl}${cloneUrl}`;
+        console.log("COpy url : ", copyUrl);
+        navigator.clipboard.writeText(copyUrl)
+            .then(() => toast.success(`Yay! URL copied to your clipboard.`))
+            .catch(err => toast.error("Something went wrong"));
+    }
+
+    const getCloneUrl = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.get(`${backendUrl}/v1/share-clone-url/${shareId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.data.success == true) {
+                writeCloneFileURL(response.data.cloneUrl);
+            }
+        }
+        catch (error) {
+            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
+            toast.error(errorMsg);
+            console.log("clone url error", error);
+        }
+        finally {
+            dispatch(setSharedNoteId(null));
+            dispatch(setDisplayLinkBox());
+        }
+    }
 
     return (
         <>
@@ -47,7 +72,7 @@ export default function ShareLink(props) {
                     <div className={`flex items-center gap-2 mt-2`}>
                         <button onClick={readFileURL} className={`bg-[#3773f4] border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-[#373af4] border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Read only</button>
                         <button onClick={writeOriginalFileURL} className="bg-red-400 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-red-600 border-2 rounded-sm w-37 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit original</button>
-                        <button className="bg-yellow-300 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-yellow-600 border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit clone</button>
+                        <button onClick={getCloneUrl} className="bg-yellow-300 border-[#EBE8DB] text-[#3D0301] font-para text-lg hover:bg-yellow-600 border-2 rounded-sm w-30 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit clone</button>
                     </div>
                     <div className='justify-center mt-3 mb-2'>
                         <button onClick={hideShareLinkOption} className={`border-[#EBE8DB] bg-green-400 text-[#3D0301] hover:bg-green-600 font-para text-lg border-2 rounded-sm w-full h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Cancle</button>

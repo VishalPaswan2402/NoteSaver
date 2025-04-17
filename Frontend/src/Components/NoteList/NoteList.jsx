@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { markImportant } from '../../Utility/MarkImportant.js';
-import { setAlertBox, setCurrentNoteArchive, setDisplayLinkBox, setDisplayShareOption, setSharedNoteId } from '../../ReduxSlice/SliceFunction.js';
+import { setAlertBox, setAnyChangeHappen, setChangeEditOption, setCurrentNoteArchive, setDisplayLinkBox, setDisplayShareOption, setSharedNoteId } from '../../ReduxSlice/SliceFunction.js';
 import { toast } from 'react-toastify';
 import { getRemainingDays } from '../../Utility/RemainingTime.js';
 import { usePrintNote } from '../PrintNote/UsePrintNote.jsx';
+import axios from 'axios';
 
 export default function NoteList(props) {
+    const backendUrl = "http://localhost:8080";
     const frontendUrl = `http://localhost:5173`;
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -20,12 +22,11 @@ export default function NoteList(props) {
     };
 
     const markAsImportant = async (id, onMark, isArch) => {
-        console.log(id);
         if (isArch) {
             toast.error("Please restore your note first.");
             return;
         }
-        await markImportant(id, navigate, onMark);
+        await markImportant(id, navigate, dispatch);
     }
 
     const handleShareCloneOption = (shareId) => {
@@ -36,6 +37,11 @@ export default function NoteList(props) {
     const openShareLinkBox = (id) => {
         dispatch(setSharedNoteId(id));
         dispatch(setDisplayLinkBox());
+    }
+
+    const openShareEditBox = (id) => {
+        dispatch(setChangeEditOption(true));
+        dispatch(setSharedNoteId(id));
     }
 
     return (
@@ -71,13 +77,28 @@ export default function NoteList(props) {
                                     :
                                     <>
                                         <Link to={`/v1/edit-page/${props.noteId}`}><button className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-pencil"></i></button></Link>
-                                        <button onClick={() => openShareLinkBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
-                                        <button onClick={printFn} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-print"></i></button>
-                                        <button onClick={() => handleShareCloneOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
+                                        {
+                                            props.isOriginal
+                                                ?
+                                                <>
+                                                    <button onClick={() => openShareLinkBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
+                                                    <button onClick={printFn} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-print"></i></button>
+                                                    <button onClick={() => handleShareCloneOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
+                                                </>
+                                                :
+                                                null
+                                        }
+                                        {
+                                            (props.isEditable && props.isOriginal)
+                                                ?
+                                                <button onClick={() => openShareEditBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-solid fa-ban`}></i></button>
+                                                :
+                                                null
+                                        }
                                     </>
                             }
                             <button onClick={() => handleDeleteOption(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-trash"></i></button>
-                            <button onClick={() => markAsImportant(props.noteId, props.onMark, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>
+                            <button onClick={() => markAsImportant(props.noteId, props.isArch)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-${props.imp ? "solid" : "regular"} fa-heart`}></i></button>
                         </div>
                         <div className=' text-center'>
                             <p className='font-xs p-1 text-rose-800 font-para text-lg font-bold'>{props.archDate != null ? getRemainingDays(props.archDate) : props.date}</p>

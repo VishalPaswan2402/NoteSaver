@@ -4,13 +4,16 @@ export const filterAndSortedNote = (notes, noteType, filterType, searchValue) =>
 
     // filter by note type...
     if (noteType === "Non-Archieve") {
-        filteredNotes = filteredNotes.filter(note => !note.isArchive);
+        filteredNotes = filteredNotes.filter(note => (!note.isArchive && note.isOriginal));
     }
     else if (noteType === "All Notes") {
         filteredNotes;
     }
     else if (noteType === "Archive Notes") {
-        filteredNotes = filteredNotes.filter(note => note.isArchive);
+        filteredNotes = filteredNotes.filter(note => note.isArchive && note.isOriginal);
+    }
+    else if (noteType === "Cloned Notes") {
+        filteredNotes = filteredNotes.filter(note => !note.isOriginal);
     }
 
     // filter by note property...

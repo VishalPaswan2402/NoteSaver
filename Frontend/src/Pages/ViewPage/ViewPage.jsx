@@ -28,6 +28,7 @@ export default function ViewPage(props) {
                             title={noteView.title}
                             disc={noteView.description}
                             isArch={noteView.isArchive}
+                            isOriginal={noteView.isOriginal}
                         />
                     )
                     :

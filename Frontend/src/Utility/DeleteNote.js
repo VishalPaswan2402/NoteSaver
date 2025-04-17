@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { handleOnDeleteNote, setAlertBox } from "../ReduxSlice/SliceFunction";
+import { setAlertBox, setAnyChangeHappen } from "../ReduxSlice/SliceFunction";
 
 const backendUrl = "http://localhost:8080";
 
-export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn,navigate) => {
+export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, setActiveBtn, navigate) => {
     const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
@@ -16,7 +16,7 @@ export const deleteNote = async (noteId, dispatch, setDeleteText, setIsDelete, s
                 Authorization: `Bearer ${token}`,
             },
         });
-        dispatch(handleOnDeleteNote(noteId));
+        dispatch(setAnyChangeHappen());
         toast.success(response.data.message);
     }
     catch (error) {

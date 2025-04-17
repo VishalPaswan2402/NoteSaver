@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { handleOnArchiveNote, setAlertBox } from "../ReduxSlice/SliceFunction";
+import { setAlertBox, setAnyChangeHappen } from "../ReduxSlice/SliceFunction";
 
 const backendUrl = "http://localhost:8080";
 
-export const markArchive = async (noteId, setIsArchive, dispatch, setActiveBtn, setArchiveText,navigate) => {
+export const markArchive = async (noteId, setIsArchive, dispatch, setActiveBtn, setArchiveText, navigate) => {
     const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
@@ -16,7 +16,7 @@ export const markArchive = async (noteId, setIsArchive, dispatch, setActiveBtn, 
                 Authorization: `Bearer ${token}`,
             },
         });
-        dispatch(handleOnArchiveNote(noteId));
+        dispatch(setAnyChangeHappen());
         toast.success(response.data.message);
     }
     catch (error) {

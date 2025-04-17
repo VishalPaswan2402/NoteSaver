@@ -43,6 +43,10 @@ const saveNoteSchema = new Schema({
     originalNoteId: {
         type: String,
         default: null
+    },
+    isOriginal:{
+        type:Boolean,
+        default:true, // original -> true
     }
 })
 

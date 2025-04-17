@@ -1,9 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { setAnyChangeHappen } from "../ReduxSlice/SliceFunction";
 
 const backendUrl = "http://localhost:8080";
 
-export const markImportant = async (id, navigate, onMark) => {
+export const markImportant = async (id, navigate, dispatch) => {
     const token = localStorage.getItem('token');
     if (!token) {
         navigate('/');
@@ -16,11 +17,8 @@ export const markImportant = async (id, navigate, onMark) => {
             },
         });
         if (response.data.success == true) {
-            onMark(id);
-            navigate(`${response.data.navigateUrl}`, {
-                state: { toastMessage: response.data.message }
-            });
-            console.log(response);
+            toast.success(response.data.message);
+            dispatch(setAnyChangeHappen());
         }
         else {
             toast.error("Something went wrong.");

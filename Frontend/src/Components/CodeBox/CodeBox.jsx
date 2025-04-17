@@ -1,18 +1,21 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form"
 import { toast, ToastContainer } from 'react-toastify'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDisplayCodeBox, setEditNoteData, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
+import { setAnyChangeHappen, setDisplayCodeBox, setEditNoteData, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
 
 export default function CodeBox(props) {
     const backendUrl = "http://localhost:8080";
     const noteId = useSelector(state => state.notesaver.sharedNoteId);
     const verifyNoteId = useSelector(state => state.notesaver.noteToVerify);
     const [errorMsg, setErrorMsg] = useState(null);
+    const isOriginalOrClone = useSelector(state => state.notesaver.originalOrCloneShare);
+    console.log(isOriginalOrClone);
     const dispatch = useDispatch();
-    
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -20,14 +23,16 @@ export default function CodeBox(props) {
         formState: { errors },
     } = useForm()
 
-    const endPointUrl = props.codeType ? `/v1/verify-original-share-code/${verifyNoteId}` : `/v1/set-original-share-code/${noteId}`
+    const endPointUrl = props.codeType == 'original' ?
+        `/v1/verify-original-share-code/${verifyNoteId}`
+        : props.codeType == 'clone' ?
+            `/v1/verify-clone-share-code/${verifyNoteId}`
+            : isOriginalOrClone ?
+                `/v1/set-original-share-code/${noteId}`
+                : `/v1/set-clone-share-code/${noteId}`;
 
     const onSubmit = async (data) => {
         const token = localStorage.getItem("token");
-        if (!token) {
-            setErrorMsg("Unauthorized user, please login.");
-            return;
-        }
         try {
             const response = await axios.post(`${backendUrl}${endPointUrl}`, data, {
                 headers: {
@@ -42,6 +47,7 @@ export default function CodeBox(props) {
                 } else {
                     dispatch(setEditNoteData(null));
                     toast.success(response.data.message);
+                    dispatch(setAnyChangeHappen());
                 }
             }
         }

@@ -80,7 +80,7 @@ export default function AboutPage(props) {
         <>
             <div className="max-w-7xl mx-auto px-4 py-2">
                 <div className='mb-2'>
-                    <h1 className='font-extrabold text-4xl text-center text-[#B03052] font-amarante'>About NoteDrive</h1>
+                    <h1 className='font-extrabold text-4xl text-center text-[#B03052] font-amarante mt-3'>About NoteDrive</h1>
                     <p className='text-center font-amarante text-[#D76C82]'>What You Can Do with NoteSaver.</p>
                 </div>
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">

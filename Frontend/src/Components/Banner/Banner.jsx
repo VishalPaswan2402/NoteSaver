@@ -43,7 +43,7 @@ export default function Banner(props) {
 
     return (
         <>
-            <ToastContainer autoClose={1500} position="top-center" />
+            <ToastContainer autoClose={2000} position="top-center" />
             <div className='bg-[#EBE8DB] banner-container flex items-center justify-evenly'>
                 <div className='w-[50%] flex items-center justify-center'>
                     <img className='h-143 w-full' src={image.book}></img>

@@ -16,7 +16,6 @@ export const SliceFunction = createSlice({
         filterOptionType: "Newest First",
         filterOptionTypeIcon: "clock",
         searchQuerys: "",
-        isArc: true,
         currNoteArchive: false,
         isViewPage: false,
         filteredCount: 0,
@@ -30,7 +29,11 @@ export const SliceFunction = createSlice({
         shareEditCodeBox: false,
         noteToVerify: null,
         editNoteData: [],
-        profileViewBox: false
+        profileViewBox: false,
+        originalOrCloneShare: null, // true -> original
+        anyChange: true,
+        changeEditOption: false,
+        sharedEditType: null
     },
     reducers: {
         setUserName: (state, action) => {
@@ -49,14 +52,6 @@ export const SliceFunction = createSlice({
             state.currentNoteId = action.payload;
             state.showAlertBox = !state.showAlertBox;
         },
-        handleOnDeleteNote: (state, action) => {
-            state.allNotes = state.allNotes.filter(note => note._id !== action.payload);
-        },
-        handleMarkNote: (state, action) => {
-            state.allNotes = state.allNotes.map(note =>
-                note._id === action.payload ? { ...note, isImportant: !note.isImportant } : note
-            );
-        },
         setFilterNoteType: (state, action) => {
             state.filterNoteType = action.payload;
         },
@@ -71,9 +66,6 @@ export const SliceFunction = createSlice({
         },
         setSearchQuery: (state, action) => {
             state.searchQuerys = action.payload;
-        },
-        handleOnArchiveNote: (state, action) => {
-            state.isArc = !state.isArc;
         },
         setCurrentNoteArchive: (state, action) => {
             state.currNoteArchive = action.payload;
@@ -122,6 +114,18 @@ export const SliceFunction = createSlice({
         },
         setProfileViewBox: (state, action) => {
             state.profileViewBox = action.payload;
+        },
+        setOriginalOrCloneShare: (state, action) => {
+            state.originalOrCloneShare = action.payload;
+        },
+        setAnyChangeHappen: (state, action) => {
+            state.anyChange = !state.anyChange;
+        },
+        setChangeEditOption: (state, action) => {
+            state.changeEditOption = action.payload;
+        },
+        setSharedEditType: (state, action) => {
+            state.sharedEditType = action.payload;
         }
     },
 })
@@ -133,14 +137,11 @@ export const {
     setIsAuthenticate,
     setCurrentUserId,
     setAlertBox,
-    handleOnDeleteNote,
-    handleMarkNote,
     setFilterNoteType,
     setFilterNoteTypeIcon,
     setFilterOptionType,
     setFilterOptionTypeIcon,
     setSearchQuery,
-    handleOnArchiveNote,
     setCurrentNoteArchive,
     setViewPageDelete,
     setFilterNoteCount,
@@ -154,7 +155,11 @@ export const {
     setShareEditCodeBox,
     setNoteIdToVerify,
     setEditNoteData,
-    setProfileViewBox
+    setProfileViewBox,
+    setOriginalOrCloneShare,
+    setAnyChangeHappen,
+    setChangeEditOption,
+    setSharedEditType
 } = SliceFunction.actions
 
 export default SliceFunction.reducer

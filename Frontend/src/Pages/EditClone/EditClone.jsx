@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { useForm } from "react-hook-form"
-import { toast, ToastContainer } from 'react-toastify'
+import React, { useEffect } from 'react'
+import { useForm } from 'react-hook-form';
+import { setNoteIdToVerify, setSharedEditType, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDisplayCodeBox, setNoteIdToVerify, setSharedEditType, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
-export default function EditShare(props) {
+export default function EditClone(props) {
     const backendUrl = "http://localhost:8080";
-    const verifyNoteId = useParams();
     const dispatch = useDispatch();
-    const [codeBox, isCodeBox] = useState(true);
-    const isBoxShow = useSelector(state => state.notesaver.shareEditCodeBox);
+    const notesId = useParams();
+    console.log(notesId);
     const editDataNote = useSelector(state => state.notesaver.editNoteData);
     const navigate = useNavigate();
 
@@ -28,6 +27,12 @@ export default function EditShare(props) {
         }
     });
 
+    useEffect(() => {
+        dispatch(setNoteIdToVerify(notesId.cloneId));
+        dispatch(setShareEditCodeBox(true));
+        dispatch(setSharedEditType('clone'));
+    }, [])
+
     const onSubmit = async (data) => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -35,7 +40,7 @@ export default function EditShare(props) {
             return;
         }
         try {
-            const response = await axios.post(`${backendUrl}/v1/update-original-shared/${verifyNoteId.id}`, data, {
+            const response = await axios.post(`${backendUrl}/v1/update-clone-shared/${notesId.cloneId}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -58,12 +63,6 @@ export default function EditShare(props) {
     }
 
     useEffect(() => {
-        dispatch(setNoteIdToVerify(verifyNoteId.id));
-        dispatch(setShareEditCodeBox(true));
-        dispatch(setSharedEditType("original"));
-    }, [])
-
-    useEffect(() => {
         if (editDataNote) {
             reset({
                 title: editDataNote.title,
@@ -75,7 +74,7 @@ export default function EditShare(props) {
     return (
         <>
             <div id='note-container' className={` align-middle text-center`}>
-                <h1 className='font-extrabold text-4xl text-center pt-3 text-[#B03052] font-amarante'>Edit Shared Note</h1>
+                <h1 className='font-extrabold text-4xl text-center pt-3 text-[#B03052] font-amarante'>Edit Cloned Note</h1>
                 <form onSubmit={handleSubmit(onSubmit)} id='input-container' className='grid max-w-2xl m-auto gap-4 mt-2'>
                     <input {...register("title")} type='text' placeholder='Enter title' className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 text-[#B03052] rounded-sm font-para text-2xl font-semibold'></input>
                     <textarea {...register("description")} id='note-area' type='text' placeholder='Enter description' className={`outline-2 outline-[#D76C82] text-[#B03052] focus:outline-[#3D0301] p-2 rounded-sm h-98 resize-none overflow-y-auto font-para text-2xl`}></textarea>

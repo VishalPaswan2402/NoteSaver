@@ -54,6 +54,7 @@ export default function FilterSearch(props) {
                             <li onClick={() => updateNoteTypeBtn("Non-Archieve", "file-lines")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Non-Archieve" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-file-lines pr-1"></i>Non-Archieve</li>
                             <li onClick={() => updateNoteTypeBtn("All Notes", "window-restore")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "All Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-window-restore pr-1"></i>All Notes</li>
                             <li onClick={() => updateNoteTypeBtn("Archive Notes", "trash-can")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Archive Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-trash-can pr-1"></i>Archive Notes</li>
+                            <li onClick={() => updateNoteTypeBtn("Cloned Notes", "clone")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Cloned Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-clone pr-1"></i>Cloned Notes</li>
                         </ul>
                     )}
                 </div>

@@ -18,6 +18,8 @@ import EditShare from './Pages/EditShare/EditShare';
 import { jwtDecode } from "jwt-decode";
 import ProfileView from './Components/ProfileView/ProfileView';
 import AboutPage from './Pages/AboutPage/AboutPage';
+import ChangeEditOption from './Components/ChangeEditOption/ChangeEditOption';
+import EditClone from './Pages/EditClone/EditClone';
 
 function App() {
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ function App() {
   const showLinkBox = useSelector(state => state.notesaver.displayLinkBox);
   const shareEditBox = useSelector(state => state.notesaver.shareEditCodeBox);
   const profileViewBox = useSelector(state => state.notesaver.profileViewBox);
+  const editChangeBox = useSelector(state => state.notesaver.changeEditOption);
+  const shareEditType = useSelector(state => state.notesaver.sharedEditType);
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
@@ -68,9 +72,10 @@ function App() {
       {showCloneShare ? <ShareOption /> : null}
       {showCodeBox ? <CodeBox /> : null}
       {showLinkBox ? <ShareLink /> : null}
-      {shareEditBox ? <CodeBox codeType={'shareEdit'} /> : null}
+      {shareEditBox ? <CodeBox codeType={shareEditType} /> : null}
       {profileViewBox ? <ProfileView /> : null}
-      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox || profileViewBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
+      {editChangeBox ? <ChangeEditOption /> : null}
+      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox || profileViewBox || editChangeBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
         <Navbar />
         <div className='pt-14'></div>
         <Routes>
@@ -79,7 +84,7 @@ function App() {
           <Route path={`/v1/add-new/${currentId}`} element={isAuthenticated ? <NewPage /> : <Navigate to="/" />} />
           <Route path="/v1/view-note/:id" element={<ViewPage />} />
           <Route path="/v1/write-original-file/:id" element={<EditShare />} />
-          {/* <Route path="/v1/view-share-file/:id" element={<ShareView />} /> */}
+          <Route path="/v1/write-clone-file/:originalId/:cloneId" element={<EditClone />} />
           <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
           {/* <Route path="/v1/enter-share-code/:id" element={isAuthenticated ? <EnterCode /> : <Navigate to="/" />} /> */}
           <Route path="/v1/about" element={<AboutPage />} />
