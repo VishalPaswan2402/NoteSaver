@@ -35,17 +35,17 @@ export default function FilterSearch(props) {
             <div className='flex w-200 m-auto mt-4 mb-4 justify-between flex-wrap'>
 
                 <div className='w-3/9 flex justify-between'>
-                    <input onChange={(e) => setQuery(e.target.value)} placeholder='Search notes...' className='focus:outline-[#3D0301] border-2 w-full p-2 font-para text-xl rounded-lg border-[#D76C82] text-[#B03052]'></input>
+                    <input onChange={(e) => setQuery(e.target.value)} placeholder='Search notes...' className='focus:outline-[#3D0301] border-2 w-full p-2 font-para text-md rounded-lg border-[#D76C82] text-[#B03052]'></input>
                 </div>
 
-                <div className="flex justify-between items-center relative z-50 w-2/10 font-para text-xl border-2 rounded-md border-[#D76C82]">
+                <div className="flex justify-between items-center relative z-50 w-2/10 font-para text-md border-2 rounded-md border-[#D76C82]">
                     <p className='text-[#B03052] p-2'>
                         Notes : {filterCount < 10 ? `0${filterCount}` : filterCount}/{noteCount.length < 10 ? `0${noteCount.length}` : noteCount.length}
                     </p>
                     <i className="p-2 text-[#B03052] fa-regular fa-chess-king"></i>
                 </div>
 
-                <div className="relative z-50 w-2/10 font-para text-xl">
+                <div className="relative z-50 w-2/10 font-para text-md">
                     <button onClick={() => updateNoteTypeBtn(noteType, noteTypeIcon)} className="bg-[#EBE8DB] w-full border-2 h-full p-2 rounded-md border-[#D76C82] focus:border-[#3D0301] text-[#B03052] cursor-pointer flex justify-between items-center">
                         {noteType} <i className={`fa-regular fa-${noteTypeIcon}`}></i>
                     </button>
@@ -59,7 +59,7 @@ export default function FilterSearch(props) {
                     )}
                 </div>
 
-                <div className="relative z-50 w-2/10 font-para text-xl">
+                <div className="relative z-50 w-2/10 font-para text-md">
                     <button onClick={() => updateFilterTypeBtn(filterType, filterTypeIcon)} className="bg-[#EBE8DB] w-full border-2 h-full p-2 rounded-md border-[#D76C82] focus:border-[#3D0301] text-[#B03052] cursor-pointer flex justify-between items-center">
                         {filterType} <i className={`fa-regular fa-${filterTypeIcon}`}></i>
                     </button>

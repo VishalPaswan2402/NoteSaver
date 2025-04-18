@@ -33,9 +33,9 @@ export default function ViewPage(props) {
                     )
                     :
                     (
-                        <p className='text-[#D76C82] text-2xl font-bold font-para text-center m-10'>
+                        <p className='text-[#D76C82] text-2xl font-semibold font-para text-center m-10'>
                             Nothing to show. <br />
-                            <Link to={`/v1/all-notes/${userId}`} className='hover:text-[#B03052]'>Go back to home page !</Link>
+                            <Link to={`/v1/all-notes/${userId}`} className='hover:text-[#B03052]'>Go back to home page!</Link>
                         </p>
                     )
             }

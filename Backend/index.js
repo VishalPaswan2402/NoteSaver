@@ -66,7 +66,7 @@ app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
     const { ...data } = req.body;
     const noteCreator = await saveNote.findById(id);
     if (!noteCreator) {
-        return res.status(500).json({ message: "Uh-oh ! Couldn't update the note. Try again?", success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note. Try again?", success: false });
     }
     const userId = noteCreator.userId;
     if (userId != req.user._id.toString()) {
@@ -84,7 +84,7 @@ app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.error("Edit note error:", error);
-        return res.status(500).json({ message: "Uh-oh ! Couldn't update the note. Try again?", navigateUrl: `v1/all-notes/${userId}`, success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note. Try again?", navigateUrl: `v1/all-notes/${userId}`, success: false });
     }
 })
 
@@ -123,7 +123,7 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const noteCreator = await saveNote.findById(id);
     if (!noteCreator) {
-        return res.status(500).json({ message: "Uh-oh ! Couldn't delete the note. Try again ?", success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't delete the note. Try again ?", success: false });
     }
     const userId = noteCreator.userId;
     if (userId != req.user._id.toString()) {
@@ -132,7 +132,7 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
     try {
         const deleteNote = await saveNote.findByIdAndDelete(id);
         const removeReference = await noteUser.findByIdAndUpdate(deleteNote.userId, { $pull: { allNotes: id } });
-        return res.status(200).json({ message: "Done ! Your note has been deleted.", navigateUrl: `/v1/all-notes/${deleteNote.userId}`, success: true });
+        return res.status(200).json({ message: "Done! Your note has been deleted.", navigateUrl: `/v1/all-notes/${deleteNote.userId}`, success: true });
     }
     catch (error) {
         console.log("delete error :", error);
@@ -146,20 +146,24 @@ app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const noteData = await saveNote.findById(id);
     if (!noteData) {
-        return res.status(500).json({ message: "Uh-oh ! Couldn't update the note’s status. Try again ?", success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", success: false });
     }
     const userId = noteData.userId;
     if (userId != req.user._id.toString()) {
         return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
     }
     try {
+        const findNote = await saveNote.findById(id);
+        if (findNote.isArchive) {
+            return res.status(500).json({ message: "Uh-oh! Please restore your note.", success: false });
+        }
         const markImp = await saveNote.findByIdAndUpdate(id, { isImportant: !noteData.isImportant }, { new: true });
         const isImp = markImp.isImportant;
-        res.status(200).json({ message: `Got it ! This note is now marked as ${isImp ? 'favourite' : 'default'}.`, navigateUrl: `/v1/all-notes/${noteData.userId}`, success: true });
+        res.status(200).json({ message: `Got it! This note is now marked as ${isImp ? 'favourite' : 'default'}.`, navigateUrl: `/v1/all-notes/${noteData.userId}`, success: true });
     }
     catch (error) {
         console.log("delete error :", error);
-        return res.status(500).json({ message: "Uh-oh ! Couldn't update the note’s status. Try again ?", navigateUrl: `/v1/all-notes/${noteData.userId}`, success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", navigateUrl: `/v1/all-notes/${noteData.userId}`, success: false });
     }
 })
 
@@ -169,7 +173,7 @@ app.post("/v1/mark-archive/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const prevArchive = await saveNote.findById(id);
     if (!prevArchive) {
-        return res.status(500).json({ message: "Uh-oh ! Couldn't update the note’s status. Try again ?", success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", success: false });
     }
     const userId = prevArchive.userId;
     if (userId != req.user._id.toString()) {
@@ -200,7 +204,7 @@ app.post("/v1/share-original/:noteId", isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const findNote = await saveNote.findById(noteId);
     if (!findNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the note.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the note.", success: false });
     }
     const userId = findNote.userId;
     if (userId != req.user._id.toString()) {
@@ -234,7 +238,7 @@ app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res
     const { ...data } = req.body;
     const getNote = await saveNote.findById(noteId);
     if (!getNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the note.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the note.", success: false });
     }
     const userId = getNote.userId;
     if (userId != req.user._id.toString()) {
@@ -244,7 +248,7 @@ app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res
         if (getNote) {
             if (getNote.isEditable === false) {
                 const updateShareNote = await saveNote.findByIdAndUpdate(noteId, { isEditable: true, shareCode: data.secretKey });
-                return res.status(200).json({ message: 'Saved ! Want to share it ? Use the share option.', isPassSet: true, success: true });
+                return res.status(200).json({ message: 'Saved! Want to share it? Use the share option.', isPassSet: true, success: true });
             } else {
                 return res.status(200).json({ message: `Already available for share.`, success: true });
             }
@@ -255,7 +259,7 @@ app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res
     }
     catch (error) {
         console.log("Share original error", error);
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the note.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the note.", success: false });
     }
 })
 
@@ -266,7 +270,7 @@ app.post('/v1/set-note-share-false/:noteId', isAuthenticated, async (req, res) =
     const { noteId } = req.params;
     const getNote = await saveNote.findById(noteId);
     if (!getNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while updating the note.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while updating the note.", success: false });
     }
     const userId = getNote.userId;
     if (userId != req.user._id.toString()) {
@@ -284,7 +288,7 @@ app.post('/v1/set-note-share-false/:noteId', isAuthenticated, async (req, res) =
     }
     catch (error) {
         console.log("Edit chage error.", error);
-        return res.status(500).json({ message: "Oops ! Something went wrong while updating the note.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while updating the note.", success: false });
     }
 })
 
@@ -331,7 +335,7 @@ app.post('/v1/update-original-shared/:noteId', isAuthenticated, async (req, res)
         const findNote = await saveNote.findById(noteId);
         if (findNote) {
             const updateNote = await saveNote.findByIdAndUpdate(noteId, { title: data.title, description: data.description });
-            res.status(200).json({ message: "Great ! The original note is now updated.", success: true, navigateUrl: '/' });
+            res.status(200).json({ message: "Great! The original note is now updated.", success: true, navigateUrl: '/' });
         }
         else {
             return res.status(404).json({ message: "Sorry, editing isn’t allowed for this note.", success: false });
@@ -348,7 +352,7 @@ app.post("/v1/share-clone/:noteId", isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const findNote = await saveNote.findById(noteId);
     if (!findNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
     const userId = findNote.userId;
     // console.log("Clone : ", findNote);
@@ -372,7 +376,7 @@ app.post("/v1/share-clone/:noteId", isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.log("Share original error", error);
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
 });
 
@@ -384,7 +388,7 @@ app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) =
     const { ...data } = req.body;
     const getNote = await saveNote.findById(noteId);
     if (!getNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
     const userId = getNote.userId;
     // console.log(data.secretKey);
@@ -408,7 +412,7 @@ app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) =
             });
             await newClone.save();
             console.log(newClone);
-            return res.status(200).json({ message: 'All done ! Your clone is ready. Share it using the share option.', navigateUrl: `/v1/all-notes/${userId}`, clone: newClone, isPassSet: true, success: true });
+            return res.status(200).json({ message: 'All done! Your clone is ready. Share it using the share option.', navigateUrl: `/v1/all-notes/${userId}`, clone: newClone, isPassSet: true, success: true });
         }
         else {
             return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
@@ -416,7 +420,7 @@ app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) =
     }
     catch (error) {
         console.log("Share original error", error);
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
 })
 
@@ -427,7 +431,7 @@ app.get('/v1/share-clone-url/:originalNoteId', isAuthenticated, async (req, res)
     console.log(originalNoteId);
     const getNote = await saveNote.findById(originalNoteId);
     if (!getNote) {
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
     const userId = getNote.userId;
     // console.log(data.secretKey);
@@ -441,12 +445,12 @@ app.get('/v1/share-clone-url/:originalNoteId', isAuthenticated, async (req, res)
             return res.status(200).json({ cloneUrl: `/v1/write-clone-file/${originalNoteId}/${cloneNote._id}`, success: true });
         }
         else {
-            return res.status(404).json({ message: "Sorry , the clone isn’t available right now.", success: false });
+            return res.status(404).json({ message: "Sorry, the clone isn’t available right now.", success: false });
         }
     }
     catch (error) {
         console.log("Share original error", error);
-        return res.status(500).json({ message: "Oops ! Something went wrong while sharing the clone.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
     }
 })
 
@@ -470,11 +474,11 @@ app.post('/v1/verify-clone-share-code/:cloneId', isAuthenticated, async (req, re
                     }
                 }
                 else {
-                    return res.status(404).json({ message: "Sorry , editing isn’t allowed for this note.", success: false });
+                    return res.status(404).json({ message: "Sorry, editing isn’t allowed for this note.", success: false });
                 }
             }
             else {
-                return res.status(404).json({ message: "Sorry , the clone isn’t available right now.", success: false });
+                return res.status(404).json({ message: "Sorry, the clone isn’t available right now.", success: false });
             }
         }
         else {
@@ -498,7 +502,7 @@ app.post('/v1/update-clone-shared/:cloneId', isAuthenticated, async (req, res) =
             res.status(200).json({ message: "The cloned note is updated! All changes are saved.", success: true, navigateUrl: '/' });
         }
         else {
-            return res.status(404).json({ message: "Sorry , editing isn’t allowed for this note.", success: false });
+            return res.status(404).json({ message: "Sorry, editing isn’t allowed for this note.", success: false });
         }
     }
     catch (error) {

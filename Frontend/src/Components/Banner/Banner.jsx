@@ -50,7 +50,7 @@ export default function Banner(props) {
                 </div>
 
                 <div className='w-[50%] flex justify-center'>
-                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-5 rounded-lg shadow-2xl shadow-[#D76C82]'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-5 rounded-md shadow-2xl shadow-[#D76C82]'>
                         <h1 className='text-center text-2xl font-bold font-amarante text-[#B03052]'>
                             {
                                 forget
@@ -64,26 +64,26 @@ export default function Banner(props) {
                                         "Signup Form"
                             }
                         </h1>
-                        <input disabled={!formActive} type='text' placeholder='Username' {...register("username")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]' ></input>
+                        <input disabled={!formActive} type='text' placeholder='Username' {...register("username")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]' ></input>
                         {
                             forget
                                 ?
-                                <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
+                                <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]'></input>
                                 :
                                 account
                                     ?
-                                    <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
+                                    <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]'></input>
                                     :
                                     (
                                         <>
-                                            <input disabled={!formActive} type='text' placeholder='Full name' {...register("fullname")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]' ></input>
-                                            <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
-                                            <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
-                                            <input disabled={!formActive} type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-1 pl-2 rounded-sm font-para text-[20px] text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='text' placeholder='Full name' {...register("fullname")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]' ></input>
+                                            <input disabled={!formActive} type='email' placeholder='E-mail' {...register("email")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Password' {...register("password")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]'></input>
+                                            <input disabled={!formActive} type='password' placeholder='Confirm password' {...register("cnfpassword")} className='outline-2 outline-[#D76C82] focus:outline-[#3D0301] p-2 pl-2 rounded-sm font-para text-md text-[#B03052]'></input>
                                         </>
                                     )
                         }
-                        <button disabled={!formActive} type='submit' className={`border-2 text-center text-[#EBE8DB] rounded-sm p-1 cursor-pointer hover:text-white font-para text-[20px]
+                        <button disabled={!formActive} type='submit' className={`border-2 text-center text-[#EBE8DB] rounded-sm p-2 cursor-pointer hover:text-white font-para text-md
                             ${formActive
                                 ? "bg-[#D76C82] hover:bg-[#B03052] border-[#B03052] hover:border-[#3D0301] "
                                 : "bg-[#B03052] border-[#3D0301] text-white cursor-wait"
@@ -111,13 +111,13 @@ export default function Banner(props) {
                                 null
                                 :
                                 <div className='flex justify-between'>
-                                    <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-[20px]' onClick={changeForm} >
+                                    <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-md' onClick={changeForm} >
                                         {
                                             account
                                                 ?
-                                                "Join us – it's free !"
+                                                "Join us – it's free!"
                                                 :
-                                                "Existing user ?"
+                                                "Existing user?"
                                         }
                                     </p>
                                     {
@@ -125,7 +125,7 @@ export default function Banner(props) {
                                             ?
                                             null
                                             :
-                                            <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-[20px]' onClick={() => setForget(!forget)} >Forget password ?</p>
+                                            <p className='cursor-pointer text-[#B03052] hover:text-[#B03052] hover:font-semibold inline font-para text-md' onClick={() => setForget(!forget)} >Forget password?</p>
                                     }
                                 </div>
                         }

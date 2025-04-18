@@ -41,13 +41,13 @@ export default function Navbar(props) {
                             isAuthenticated
                                 ?
                                 <div className='flex gap-5'>
-                                    <NavLink to={`/v1/all-notes/${currId}`} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>All-Notes</NavLink>
-                                    <NavLink to={`/v1/add-new/${currId}`} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>New-Note</NavLink>
+                                    <NavLink to={`/v1/all-notes/${currId}`} className={({ isActive }) => isActive ? "active-link font-para" : "text-red-400 font-para hover:text-[#3D0301]"}>All-Notes</NavLink>
+                                    <NavLink to={`/v1/add-new/${currId}`} className={({ isActive }) => isActive ? "active-link font-para" : "text-red-400 font-para hover:text-[#3D0301]"}>New-Note</NavLink>
                                 </div>
                                 :
                                 <>
-                                    <NavLink to={'/'} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>NoteDrive</NavLink>
-                                    <NavLink to={'/v1/about'} className={({ isActive }) => isActive ? "active-link font-amarante" : "text-red-400 font-amarante hover:text-[#3D0301]"}>About</NavLink>
+                                    <NavLink to={'/'} className={({ isActive }) => isActive ? "active-link font-para" : "text-red-400 font-para hover:text-[#3D0301]"}>NoteDrive</NavLink>
+                                    <NavLink to={'/v1/about'} className={({ isActive }) => isActive ? "active-link font-para" : "text-red-400 font-para hover:text-[#3D0301]"}>About</NavLink>
                                 </>
                         }
                     </div>
@@ -57,7 +57,7 @@ export default function Navbar(props) {
                         isAuthenticated
                             ?
                             <>
-                                <div className="relative z-50 font-para text-xl w-35 mr-7">
+                                <div className="relative z-50 font-para text-lg w-35 mr-7">
                                     <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-md hover:border-[#3d0301b5] hover:bg-[#3d0301b5] hover:text-[#EBE8DB] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption">
                                         <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>{userName.length > 1 ? userName.slice(0, 2).toUpperCase() : userName.toUpperCase()}</div>
                                         {

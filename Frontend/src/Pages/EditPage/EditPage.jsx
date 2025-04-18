@@ -22,7 +22,7 @@ export default function EditPage(props) {
                         <AddNew heading="Edit Your Note" title={noteView.title} disc={noteView.description} btnName="Update Note" edit={true} editType="editNote" editNoteId={editId.id} isArch={noteView.isArchive} />
                     )
                     :
-                    <p className='text-blue-700 text-3xl font-bold text-center m-20'>Loading...</p>
+                    <p className='text-blue-700 text-2xl font-para font-semibold text-center m-20'>Loading...</p>
             }
         </>
     )

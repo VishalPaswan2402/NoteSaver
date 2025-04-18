@@ -1,10 +1,12 @@
 @media print {
     @page {
-        margin-top: 3rem;
-        margin-bottom: 3rem;
+        margin: 3rem;
     }
 
     .print-container {
         page-break-inside: avoid;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
     }
 }

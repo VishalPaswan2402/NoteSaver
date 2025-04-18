@@ -80,14 +80,14 @@ export default function AboutPage(props) {
         <>
             <div className="max-w-7xl mx-auto px-4 py-2">
                 <div className='mb-2'>
-                    <h1 className='font-extrabold text-4xl text-center text-[#B03052] font-amarante mt-3'>About NoteDrive</h1>
+                    <h1 className='font-extrabold text-4xl text-center text-[#B03052] font-amarante mt-2'>About NoteDrive</h1>
                     <p className='text-center font-amarante text-[#D76C82]'>What You Can Do with NoteSaver.</p>
                 </div>
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
                         <div key={index} className="bg-[#ffadbd41] hover:bg-[#ffadbd69] rounded-lg p-6 hover:shadow-lg hover:border-[#B03052] hover:shadow-[#d76c8192] transition duration-300" style={{ transition: '0.5s' }}>
-                            <h3 className="font-para text-3xl font-semibold text-rose-900 mb-2"><i className={`${feature.icon} text-lg`}></i> {feature.title}</h3>
-                            <p className="text-gray-600 font-para text-[20px]">{feature.description}</p>
+                            <h3 className="font-para text-lg font-semibold text-rose-900 mb-2"><i className={`${feature.icon} text-lg`}></i> {feature.title}</h3>
+                            <p className="text-gray-600 font-para text-md">{feature.description}</p>
                         </div>
                     ))}
                 </div>

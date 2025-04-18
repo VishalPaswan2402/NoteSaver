@@ -68,8 +68,8 @@ export default function HomePage(props) {
             {
                 (sortedNotes.length == 0 && notes.length > 0)
                     ?
-                    <p className='text-[#D76C82] text-2xl font-bold font-para text-center m-10'>
-                        Oops ! No matches found. <br /> Please try a different keyword !
+                    <p className='text-[#D76C82] text-2xl font-semibold font-para text-center m-10'>
+                        Oops! No matches found. <br /> Please try a different keyword!
                     </p> :
                     notes.length > 0
                         ?
@@ -94,7 +94,7 @@ export default function HomePage(props) {
                         )
                         :
                         (
-                            <p className='text-[#D76C82] text-2xl font-bold font-para text-center m-10'>
+                            <p className='text-[#D76C82] text-2xl font-semibold font-para text-center m-10'>
                                 Your notebook is empty. <br />
                                 <Link to={`/v1/add-new/${userId}`} className='hover:text-[#B03052]'>Click to add your first note !</Link>
                             </p>
