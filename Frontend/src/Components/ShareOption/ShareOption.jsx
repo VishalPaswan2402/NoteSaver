@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { setDisplayCodeBox, setDisplayShareOption, setOriginalOrCloneShare, setSharedNoteId } from '../../ReduxSlice/SliceFunction';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { shareOriginalToEdit } from '../../Utility/ShareOriginalToEdit';
+import { shareCloneNoteData } from '../../Utility/ShareCloneNoteData';
 
 export default function ShareOption(props) {
     const backendUrl = "http://localhost:8080";
@@ -31,30 +32,7 @@ export default function ShareOption(props) {
 
     // clone share
     const shareCloneNote = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await axios.post(`${backendUrl}/v1/share-clone/${sharedNoteId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (response.data.isActiveNote === true) {
-                dispatch(setSharedNoteId(null));
-                copyURLtoClipboard(response.data.message, response.data.shareCloneUrl);
-            }
-            else {
-                dispatch(setDisplayCodeBox(true));
-                dispatch(setOriginalOrCloneShare(false));
-            }
-        }
-        catch (error) {
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            toast.error(errorMsg);
-            console.log("Share original error : ", error);
-        }
-        finally {
-            dispatch(setDisplayShareOption());
-        }
+        await shareCloneNoteData(sharedNoteId, setSharedNoteId, copyURLtoClipboard, setDisplayCodeBox, setOriginalOrCloneShare, setDisplayShareOption, dispatch);
     }
 
     return (

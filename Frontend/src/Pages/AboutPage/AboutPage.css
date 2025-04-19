@@ -1,0 +1,29 @@
+@keyframes waveEffect {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.wave {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.animate-wave2 {
+    animation: waveEffect 2s infinite ease-in-out;
+    animation-delay: 0.4s;
+}
+
+.animate-wave3 {
+    animation: waveEffect 2s infinite ease-in-out;
+    animation-delay: 0.8s;
+}

@@ -1,10 +1,11 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useForm } from "react-hook-form"
-import { toast, ToastContainer } from 'react-toastify'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from 'react-toastify';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAnyChangeHappen, setDisplayCodeBox, setEditNoteData, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
+import { codeSetupVerify } from '../../Utility/CodeSetupVerify';
 
 export default function CodeBox(props) {
     const backendUrl = "http://localhost:8080";
@@ -12,7 +13,6 @@ export default function CodeBox(props) {
     const verifyNoteId = useSelector(state => state.notesaver.noteToVerify);
     const [errorMsg, setErrorMsg] = useState(null);
     const isOriginalOrClone = useSelector(state => state.notesaver.originalOrCloneShare);
-    console.log(isOriginalOrClone);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -32,33 +32,7 @@ export default function CodeBox(props) {
                 : `/v1/set-clone-share-code/${noteId}`;
 
     const onSubmit = async (data) => {
-        const token = localStorage.getItem("token");
-        try {
-            const response = await axios.post(`${backendUrl}${endPointUrl}`, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (response.data.success == true) {
-                setErrorMsg(null);
-                dispatch(setShareEditCodeBox(false));
-                if (response.data.isPassSet == false) {
-                    dispatch(setEditNoteData(response.data.editNote));
-                } else {
-                    dispatch(setEditNoteData(null));
-                    toast.success(response.data.message);
-                    dispatch(setAnyChangeHappen());
-                }
-            }
-        }
-        catch (error) {
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            setErrorMsg(errorMsg);
-            console.log("Something went wrong.", error);
-        }
-        finally {
-            dispatch(setDisplayCodeBox(false));
-        }
+        await codeSetupVerify(endPointUrl, data, setErrorMsg, dispatch, setShareEditCodeBox, setEditNoteData, setAnyChangeHappen, setDisplayCodeBox);
     }
 
     const handleShareBox = () => {

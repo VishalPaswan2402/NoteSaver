@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { setNoteIdToVerify, setSharedEditType, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { updateClone } from '../../Utility/UpdateClone';
 
 export default function EditClone(props) {
     const backendUrl = "http://localhost:8080";
@@ -34,32 +35,7 @@ export default function EditClone(props) {
     }, [])
 
     const onSubmit = async (data) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post(`${backendUrl}/v1/update-clone-shared/${notesId.cloneId}`, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (response.data.success == true) {
-                toast.success(response.data.message);
-                navigate('/');
-            }
-            else {
-                toast.error("Oops! Couldn't update the note. Please try again.");
-                navigate('/');
-            }
-        }
-        catch (error) {
-            console.log(error);
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            toast.error(errorMsg);
-            navigate('/');
-        }
+        await updateClone(navigate, notesId.cloneId, data);
     }
 
     useEffect(() => {

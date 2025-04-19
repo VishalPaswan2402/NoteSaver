@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import { setDisplayLinkBox, setSharedNoteId } from '../../ReduxSlice/SliceFunction';
 import axios from 'axios';
+import { getCloneurl } from '../../Utility/GetCloneUrl';
 
 export default function ShareLink(props) {
     const backendUrl = "http://localhost:8080";
@@ -35,33 +36,13 @@ export default function ShareLink(props) {
 
     const writeCloneFileURL = (cloneUrl) => {
         const copyUrl = `${frontendUrl}${cloneUrl}`;
-        console.log("COpy url : ", copyUrl);
         navigator.clipboard.writeText(copyUrl)
             .then(() => toast.success(`Yay! URL copied to your clipboard.`))
             .catch(err => toast.error("Something went wrong"));
     }
 
     const getCloneUrl = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await axios.get(`${backendUrl}/v1/share-clone-url/${shareId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (response.data.success == true) {
-                writeCloneFileURL(response.data.cloneUrl);
-            }
-        }
-        catch (error) {
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            toast.error(errorMsg);
-            console.log("clone url error", error);
-        }
-        finally {
-            dispatch(setSharedNoteId(null));
-            dispatch(setDisplayLinkBox());
-        }
+        await getCloneurl(shareId, writeCloneFileURL, setSharedNoteId, setDisplayLinkBox, dispatch);
     }
 
     return (

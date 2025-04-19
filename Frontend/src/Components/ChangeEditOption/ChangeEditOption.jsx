@@ -1,8 +1,9 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAnyChangeHappen, setChangeEditOption } from '../../ReduxSlice/SliceFunction';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { makeFileNonEditable } from '../../Utility/MakeFileNonEditable';
 
 export default function ChangeEditOption(props) {
     const backendUrl = "http://localhost:8080";
@@ -15,29 +16,14 @@ export default function ChangeEditOption(props) {
     }
 
     const setShareOriginalOff = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await axios.post(`${backendUrl}/v1/set-note-share-false/${shareId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            toast.success(response.data.message);
-            dispatch(setAnyChangeHappen());
-            dispatch(setChangeEditOption(false));
-        }
-        catch (error) {
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            toast.error(errorMsg);
-            console.log(error);
-        }
+        await makeFileNonEditable(shareId, setAnyChangeHappen, setChangeEditOption, dispatch);
     }
 
     return (
         <>
             <div className='w-screen fixed h-screen z-30'>
                 <div className="bg-[#B03052] border-2 border-[#EBE8DB] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-3 w-60 rounded-md shadow-2xl shadow-gray-600">
-                    <p className='text-sm text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-triangle-exclamation text-4xl p-1 text-[#EBE8DB]"></i><br></br>Change shared document to non-editable.</p>
+                    <p className='text-sm text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-circle-exclamation text-4xl p-1 text-[#EBE8DB]"></i><br></br>Change original shared document to non-editable.</p>
                     <div className={`grid grid-cols-2 gap-3 mt-2 mb-1`}>
                         <button onClick={setShareOriginalOff} className={`bg-blue-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-blue-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Non-editable</button>
                         <button onClick={hideChangeEditBox} className="bg-green-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-green-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Cancle</button>

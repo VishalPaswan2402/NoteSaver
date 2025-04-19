@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useForm } from "react-hook-form"
-import { toast, ToastContainer } from 'react-toastify'
+import React, { useEffect, useState } from 'react';
+import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDisplayCodeBox, setNoteIdToVerify, setSharedEditType, setShareEditCodeBox } from '../../ReduxSlice/SliceFunction';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { updateOriginal } from '../../Utility/UpdateOriginal';
 
 export default function EditShare(props) {
     const backendUrl = "http://localhost:8080";
@@ -29,32 +30,7 @@ export default function EditShare(props) {
     });
 
     const onSubmit = async (data) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post(`${backendUrl}/v1/update-original-shared/${verifyNoteId.id}`, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (response.data.success == true) {
-                toast.success(response.data.message);
-                navigate('/');
-            }
-            else {
-                toast.error("Oops! Couldn't update the note. Please try again.");
-                navigate('/');
-            }
-        }
-        catch (error) {
-            console.log(error);
-            const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
-            toast.error(errorMsg);
-            navigate('/');
-        }
+        await updateOriginal(navigate, verifyNoteId.id, data);
     }
 
     useEffect(() => {

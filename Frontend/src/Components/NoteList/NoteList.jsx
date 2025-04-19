@@ -77,7 +77,7 @@ export default function NoteList(props) {
                                                 <>
                                                     <button onClick={() => openShareLinkBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-share-nodes"></i></button>
                                                     <button onClick={printFn} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-print"></i></button>
-                                                    <button onClick={() => handleShareCloneOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-clone"></i></button>
+                                                    <button onClick={() => handleShareCloneOption(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className="fa-solid fa-link"></i></button>
                                                 </>
                                                 :
                                                 null
