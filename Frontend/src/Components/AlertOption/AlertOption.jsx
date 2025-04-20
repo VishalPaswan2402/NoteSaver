@@ -45,7 +45,7 @@ export default function AlertOption(props) {
             <div className='w-screen fixed h-screen z-30'>
                 <div className="bg-[#B03052] border-2 border-[#EBE8DB] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-3 w-60 rounded-md shadow-2xl shadow-gray-600">
                     <p className='text-lg text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-triangle-exclamation text-4xl p-1 text-[#EBE8DB]"></i></p>
-                    <p className='text-sm text-[#EBE8DB] font-para text-center p-1'>Delete is permanent, but Archive lets you restore data within 10 days.</p>
+                    <p className='text-sm text-[#EBE8DB] font-para text-center p-1'>Deleting is permanent and also removes both original and clone if exists. Archiving keeps the clone and allows recovery within 10 days.</p>
                     <div className={`${(isArchive || isDelete) ? 'flex' : 'grid grid-cols-2'} gap-3 mt-1`}>
                         {
                             isDelete

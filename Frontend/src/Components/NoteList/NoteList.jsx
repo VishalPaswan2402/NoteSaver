@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { markImportant } from '../../Utility/MarkImportant.js';
-import { setAlertBox, setAnyChangeHappen, setChangeEditOption, setCurrentNoteArchive, setDisplayLinkBox, setDisplayShareOption, setSharedNoteId } from '../../ReduxSlice/SliceFunction.js';
+import { setAlertBox, setAnyChangeHappen, setChangeEditOption, setCloneId, setCurrentNoteArchive, setDisplayLinkBox, setDisplayShareOption, setMergeOptionBox, setSharedNoteId } from '../../ReduxSlice/SliceFunction.js';
 import { toast } from 'react-toastify';
 import { getRemainingDays } from '../../Utility/RemainingTime.js';
 import { usePrintNote } from '../PrintNote/UsePrintNote.jsx';
@@ -38,6 +38,11 @@ export default function NoteList(props) {
     const openShareEditBox = (id) => {
         dispatch(setChangeEditOption(true));
         dispatch(setSharedNoteId(id));
+    }
+
+    const showMergeBox = (id) => {
+        dispatch(setMergeOptionBox(true));
+        dispatch(setCloneId(id));
     }
 
     return (
@@ -87,7 +92,11 @@ export default function NoteList(props) {
                                                 ?
                                                 <button onClick={() => openShareEditBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-solid fa-ban`}></i></button>
                                                 :
-                                                null
+                                                (!props.isOriginal)
+                                                    ?
+                                                    <button onClick={() => showMergeBox(props.noteId)} className='w-10 cursor-pointer border-2 border-[#D76C82] rounded-lg p-2 m-1 text-[#B03052] hover:text-[#3D0301] hover:border-[#B03052] hover:bg-[#EBE8DB]'><i className={`fa-solid fa-layer-group`}></i></button>
+                                                    :
+                                                    null
                                         }
                                     </>
                             }

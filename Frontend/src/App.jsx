@@ -20,6 +20,7 @@ import ProfileView from './Components/ProfileView/ProfileView';
 import AboutPage from './Pages/AboutPage/AboutPage';
 import ChangeEditOption from './Components/ChangeEditOption/ChangeEditOption';
 import EditClone from './Pages/EditClone/EditClone';
+import MergeOption from './Components/MergeOption/MergeOption';
 
 function App() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ function App() {
   const profileViewBox = useSelector(state => state.notesaver.profileViewBox);
   const editChangeBox = useSelector(state => state.notesaver.changeEditOption);
   const shareEditType = useSelector(state => state.notesaver.sharedEditType);
+  const mergeBox = useSelector(state => state.notesaver.mergeOption);
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
@@ -75,7 +77,8 @@ function App() {
       {shareEditBox ? <CodeBox codeType={shareEditType} /> : null}
       {profileViewBox ? <ProfileView /> : null}
       {editChangeBox ? <ChangeEditOption /> : null}
-      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox || profileViewBox || editChangeBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
+      {mergeBox ? <MergeOption /> : null}
+      <div className={`${(showAlert || showCloneShare || showCodeBox || showLinkBox || shareEditBox || profileViewBox || editChangeBox || mergeBox) ? ' blur-sm pointer-events-none' : "bg-[#EBE8DB]"}`}>
         <Navbar />
         <div className='pt-14'></div>
         <Routes>

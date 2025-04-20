@@ -33,7 +33,9 @@ export const SliceFunction = createSlice({
         originalOrCloneShare: null, // true -> original
         anyChange: true,
         changeEditOption: false,
-        sharedEditType: null
+        sharedEditType: null,
+        mergeOption: false,
+        cloneId: null,
     },
     reducers: {
         setUserName: (state, action) => {
@@ -126,7 +128,13 @@ export const SliceFunction = createSlice({
         },
         setSharedEditType: (state, action) => {
             state.sharedEditType = action.payload;
-        }
+        },
+        setMergeOptionBox: (state, action) => {
+            state.mergeOption = action.payload;
+        },
+        setCloneId: (state, action) => {
+            state.cloneId = action.payload;
+        },
     },
 })
 
@@ -159,7 +167,9 @@ export const {
     setOriginalOrCloneShare,
     setAnyChangeHappen,
     setChangeEditOption,
-    setSharedEditType
+    setSharedEditType,
+    setMergeOptionBox,
+    setCloneId
 } = SliceFunction.actions
 
 export default SliceFunction.reducer
