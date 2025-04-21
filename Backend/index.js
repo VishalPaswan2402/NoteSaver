@@ -64,18 +64,18 @@ app.post("/v1/new-note/:id", isAuthenticated, async (req, res) => {
 app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { ...data } = req.body;
-    const noteCreator = await saveNote.findById(id);
-    if (!noteCreator) {
-        return res.status(500).json({ message: "Uh-oh! Couldn't update the note. Try again?", success: false });
-    }
-    const userId = noteCreator.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
-    }
     if (!data.title || !data.description) {
         return res.status(400).json({ message: "Oops! Don’t forget to add a title and a description.", success: false });
     }
     try {
+        const noteCreator = await saveNote.findById(id);
+        if (!noteCreator) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = noteCreator.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+        }
         const updatedNote = await saveNote.findByIdAndUpdate(id, { title: data.title, description: data.description }, { new: true });
         if (!updatedNote) {
             return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
@@ -84,7 +84,7 @@ app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.error("Edit note error:", error);
-        return res.status(500).json({ message: "Uh-oh! Couldn't update the note. Try again?", navigateUrl: `v1/all-notes/${userId}`, success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note. Try again?", navigateUrl: `/`, success: false });
     }
 })
 
@@ -93,6 +93,10 @@ app.post("/v1/edit-note/:id", isAuthenticated, async (req, res) => {
 app.get("/v1/all-notes/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     try {
+        const findUser = await noteUser.findById(id);
+        if (!findUser) {
+            return res.status(500).json({ message: "Uh-oh! user is not exist.", success: false });
+        }
         const notes = await saveNote.find({ userId: id });
         if (notes) {
             return res.status(200).json({ message: "All notes", notes: notes, success: true });
@@ -102,7 +106,7 @@ app.get("/v1/all-notes/:id", isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Uh-oh! server failed", success: false });
+        res.status(500).json({ message: "Oops! server failed, try again later.", success: false });
     }
 })
 
@@ -110,35 +114,41 @@ app.get("/v1/all-notes/:id", isAuthenticated, async (req, res) => {
 // view note
 app.get("/v1/view-note/:id", async (req, res) => {
     let { id } = req.params;
-    const views = await saveNote.findById(id);
-    if (views) {
-        return res.status(200).json({ message: "Note found successfully.", viewNote: views, success: true });
+    try {
+        const views = await saveNote.findById(id);
+        if (views) {
+            return res.status(200).json({ message: "Note found successfully.", viewNote: views, success: true });
+        }
+        return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
     }
-    return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Oops! server failed, try again later.", success: false });
+    }
 })
 
 
 // delete note
 app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
-    const noteCreator = await saveNote.findById(id);
-    if (!noteCreator) {
-        return res.status(500).json({ message: "Uh-oh! Couldn't delete the note. Try again ?", success: false });
-    }
-    const userId = noteCreator.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted to delete this note.", success: false });
-    }
     try {
-        if (noteCreator.isOriginal) {
-            const cloneDelete = await saveNote.findOneAndDelete({ originalNoteId: id, userId: noteCreator.userId, isOriginal: false });
+        const findNote = await saveNote.findById(id);
+        if (!findNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = findNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted to delete this note.", success: false });
+        }
+        if (findNote.isOriginal) {
+            const cloneDelete = await saveNote.findOneAndDelete({ originalNoteId: id, userId: findNote.userId, isOriginal: false });
             const deleteNote = await saveNote.findByIdAndDelete(id);
             const removeReference = await noteUser.findByIdAndUpdate(deleteNote.userId, { $pull: { allNotes: id } });
             return res.status(200).json({ message: "Done! Your note has been deleted.", navigateUrl: `/v1/all-notes/${deleteNote.userId}`, success: true });
         }
         else {
-            const removeId = noteCreator.originalNoteId;
-            const deleteOriginal = await saveNote.findByIdAndDelete(noteCreator.originalNoteId);
+            const removeId = findNote.originalNoteId;
+            const deleteOriginal = await saveNote.findByIdAndDelete(findNote.originalNoteId);
             const delteteClone = await saveNote.findByIdAndDelete(id);
             const removeReference = await noteUser.findByIdAndUpdate(delteteClone.userId, { $pull: { allNotes: removeId } });
             return res.status(200).json({ message: "Done! Your note has been deleted.", navigateUrl: `/v1/all-notes/${delteteClone.userId}`, success: true });
@@ -146,7 +156,7 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.log("delete error :", error);
-        return res.status(500).json({ message: "Failed to delete the note.", navigateUrl: `/v1/all-notes/${deleteNote.userId}`, success: false });
+        return res.status(500).json({ message: "Failed to delete the note.", navigateUrl: `/`, success: false });
     }
 })
 
@@ -154,26 +164,26 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
 // mark as important
 app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
-    const noteData = await saveNote.findById(id);
-    if (!noteData) {
-        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", success: false });
-    }
-    const userId = noteData.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
-    }
     try {
         const findNote = await saveNote.findById(id);
+        if (!findNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = findNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+        }
+        // const findNote = await saveNote.findById(id);
         if (findNote.isArchive) {
             return res.status(500).json({ message: "Uh-oh! Please restore your note.", success: false });
         }
-        const markImp = await saveNote.findByIdAndUpdate(id, { isImportant: !noteData.isImportant }, { new: true });
+        const markImp = await saveNote.findByIdAndUpdate(id, { isImportant: !findNote.isImportant }, { new: true });
         const isImp = markImp.isImportant;
-        res.status(200).json({ message: `Got it! This note is now marked as ${isImp ? 'favourite' : 'default'}.`, navigateUrl: `/v1/all-notes/${noteData.userId}`, success: true });
+        res.status(200).json({ message: `Got it! This note is now marked as ${isImp ? 'favourite' : 'default'}.`, navigateUrl: `/v1/all-notes/${findNote.userId}`, success: true });
     }
     catch (error) {
         console.log("delete error :", error);
-        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", navigateUrl: `/v1/all-notes/${noteData.userId}`, success: false });
+        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", navigateUrl: `/`, success: false });
     }
 })
 
@@ -181,15 +191,15 @@ app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
 // mark archive...
 app.post("/v1/mark-archive/:id", isAuthenticated, async (req, res) => {
     const { id } = req.params;
-    const prevArchive = await saveNote.findById(id);
-    if (!prevArchive) {
-        return res.status(500).json({ message: "Uh-oh! Couldn't update the note’s status. Try again ?", success: false });
-    }
-    const userId = prevArchive.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
-    }
     try {
+        const prevArchive = await saveNote.findById(id);
+        if (!prevArchive) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = prevArchive.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted to make changes to this note.", success: false });
+        }
         if (!prevArchive.isOriginal) {
             return res.status(500).json({ message: "Sorry! Clone data can't move to archive.", success: false });
         }
@@ -207,7 +217,7 @@ app.post("/v1/mark-archive/:id", isAuthenticated, async (req, res) => {
     }
     catch (error) {
         console.log("delete error :", error);
-        return res.status(500).json({ message: "Oops! That didn’t work", navigateUrl: `/v1/all-notes/${prevArchive.userId}`, success: false });
+        return res.status(500).json({ message: "Oops! That didn’t work", navigateUrl: `/`, success: false });
     }
 })
 
@@ -215,31 +225,26 @@ app.post("/v1/mark-archive/:id", isAuthenticated, async (req, res) => {
 // share original note to edit...
 app.post("/v1/share-original/:noteId", isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
-    const findNote = await saveNote.findById(noteId);
-    if (!findNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while sharing the note.", success: false });
-    }
-    const userId = findNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
-        if (findNote) {
-            if (findNote.isEditable === true) {
-                const secretKey = findNote.shareCode;
-                return res.status(200).json({ message: `Already available to share your note.`, shareOriginalUrl: `/v1/write-original-file/${noteId}`, isActiveNote: true, success: true });
-            }
-            else {
-                return res.status(200).json({ message: `Enter secret code.`, isActiveNote: false, navigateUrl: `/v1/enter-share-code/${noteId}`, success: true });
-            }
+        const findNote = await saveNote.findById(noteId);
+        if (!findNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = findNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+        }
+        if (findNote.isEditable === true) {
+            const secretKey = findNote.shareCode;
+            return res.status(200).json({ message: `Already available to share your note.`, shareOriginalUrl: `/v1/write-original-file/${noteId}`, isActiveNote: true, success: true });
         }
         else {
-            return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
+            return res.status(200).json({ message: `Enter secret code.`, isActiveNote: false, navigateUrl: `/v1/enter-share-code/${noteId}`, success: true });
         }
     }
     catch (error) {
         console.log("Share original error", error);
-        return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        return res.status(500).json({ message: "Oops! That didn’t work", success: false });
     }
 });
 
@@ -248,25 +253,20 @@ app.post("/v1/share-original/:noteId", isAuthenticated, async (req, res) => {
 app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
-    const getNote = await saveNote.findById(noteId);
-    if (!getNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while sharing the note.", success: false });
-    }
-    const userId = getNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
-        if (getNote) {
-            if (getNote.isEditable === false) {
-                const updateShareNote = await saveNote.findByIdAndUpdate(noteId, { isEditable: true, shareCode: data.secretKey });
-                return res.status(200).json({ message: 'Saved! Want to share it? Use the share option.', isPassSet: true, success: true });
-            } else {
-                return res.status(200).json({ message: `Already available for share.`, success: true });
-            }
+        const getNote = await saveNote.findById(noteId);
+        if (!getNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
         }
-        else {
-            return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        const userId = getNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+        }
+        if (getNote.isEditable === false) {
+            const updateShareNote = await saveNote.findByIdAndUpdate(noteId, { isEditable: true, shareCode: data.secretKey });
+            return res.status(200).json({ message: 'Saved! Want to share it? Use the share option.', isPassSet: true, success: true });
+        } else {
+            return res.status(200).json({ message: `Already available for share.`, success: true });
         }
     }
     catch (error) {
@@ -279,23 +279,17 @@ app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res
 // change share original to edit...
 app.post('/v1/set-note-share-false/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
-    const getNote = await saveNote.findById(noteId);
-    if (!getNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while updating the note.", success: false });
-    }
-    const userId = getNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
-        const currentNote = await saveNote.findById(noteId);
-        if (currentNote) {
-            const updateNote = await saveNote.findByIdAndUpdate(noteId, { shareCode: null, isEditable: false });
-            return res.status(200).json({ message: `This note can’t be edited by shared people — it’s now view-only.`, success: true });
+        const getNote = await saveNote.findById(noteId);
+        if (!getNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
         }
-        else {
-            return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        const userId = getNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
         }
+        const updateNote = await saveNote.findByIdAndUpdate(noteId, { shareCode: null, isEditable: false });
+        return res.status(200).json({ message: `This note can’t be edited by shared people — it’s now view-only.`, success: true });
     }
     catch (error) {
         console.log("Edit chage error.", error);
@@ -311,6 +305,9 @@ app.post('/v1/verify-original-share-code/:noteId', isAuthenticated, async (req, 
     try {
         if (data.secretKey) {
             const findNote = await saveNote.findById(noteId);
+            if (!findNote) {
+                return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+            }
             const isAvalEdit = findNote.isEditable;
             if (isAvalEdit) {
                 if (findNote.shareCode === data.secretKey) {
@@ -327,7 +324,6 @@ app.post('/v1/verify-original-share-code/:noteId', isAuthenticated, async (req, 
         else {
             return res.status(401).json({ message: "Please enter secret key.", success: false });
         }
-
     } catch (error) {
         console.log("Secret code error", error);
         return res.status(500).json({ message: "Something went wrong with the code verification. Try again!", success: false });
@@ -358,27 +354,22 @@ app.post('/v1/update-original-shared/:noteId', isAuthenticated, async (req, res)
 // create clone to share...
 app.post("/v1/share-clone/:noteId", isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
-    const findNote = await saveNote.findById(noteId);
-    if (!findNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
-    }
-    const userId = findNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
-        if (findNote) {
-            const cloneNote = await saveNote.findOne({ originalNoteId: noteId });
-            if (cloneNote) {
-                const secretKey = findNote.shareCode;
-                return res.status(200).json({ message: `Clone already exist.`, shareCloneUrl: `/v1/write-clone-file/${noteId}/${cloneNote._id}`, isActiveNote: true, success: true });
-            }
-            else {
-                return res.status(200).json({ message: `Enter secret code.`, isActiveNote: false, navigateUrl: `/v1/enter-share-code/${noteId}`, success: true });
-            }
+        const findNote = await saveNote.findById(noteId);
+        if (!findNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = findNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+        }
+        const cloneNote = await saveNote.findOne({ originalNoteId: noteId });
+        if (cloneNote) {
+            const secretKey = findNote.shareCode;
+            return res.status(200).json({ message: `Clone already exist.`, shareCloneUrl: `/v1/write-clone-file/${noteId}/${cloneNote._id}`, isActiveNote: true, success: true });
         }
         else {
-            return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
+            return res.status(200).json({ message: `Enter secret code.`, isActiveNote: false, navigateUrl: `/v1/enter-share-code/${noteId}`, success: true });
         }
     }
     catch (error) {
@@ -392,34 +383,29 @@ app.post("/v1/share-clone/:noteId", isAuthenticated, async (req, res) => {
 app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
-    const getNote = await saveNote.findById(noteId);
-    if (!getNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
-    }
-    const userId = getNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
-        if (getNote) {
-            const newClone = new saveNote({
-                userId: getNote.userId,
-                title: getNote.title,
-                description: getNote.description,
-                isImportant: getNote.isImportant,
-                isArchive: getNote.isArchive,
-                archiveDate: getNote.archiveDate,
-                isEditable: true,
-                shareCode: data.secretKey,
-                originalNoteId: noteId,
-                isOriginal: false
-            });
-            await newClone.save();
-            return res.status(200).json({ message: 'All done! Your clone is ready. Share it using the share option.', navigateUrl: `/v1/all-notes/${userId}`, clone: newClone, isPassSet: true, success: true });
+        const getNote = await saveNote.findById(noteId);
+        if (!getNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
         }
-        else {
-            return res.status(404).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        const userId = getNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
         }
+        const newClone = new saveNote({
+            userId: getNote.userId,
+            title: getNote.title,
+            description: getNote.description,
+            isImportant: getNote.isImportant,
+            isArchive: getNote.isArchive,
+            archiveDate: getNote.archiveDate,
+            isEditable: true,
+            shareCode: data.secretKey,
+            originalNoteId: noteId,
+            isOriginal: false
+        });
+        await newClone.save();
+        return res.status(200).json({ message: 'All done! Your clone is ready. Share it using the share option.', navigateUrl: `/v1/all-notes/${userId}`, clone: newClone, isPassSet: true, success: true });
     }
     catch (error) {
         console.log("Share original error", error);
@@ -431,15 +417,15 @@ app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) =
 // fetch clone url to share...
 app.get('/v1/share-clone-url/:originalNoteId', isAuthenticated, async (req, res) => {
     const { originalNoteId } = req.params;
-    const getNote = await saveNote.findById(originalNoteId);
-    if (!getNote) {
-        return res.status(500).json({ message: "Oops! Something went wrong while sharing the clone.", success: false });
-    }
-    const userId = getNote.userId;
-    if (userId != req.user._id.toString()) {
-        return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
-    }
     try {
+        const getNote = await saveNote.findById(originalNoteId);
+        if (!getNote) {
+            return res.status(500).json({ message: "Hmm... we couldn’t find that note.", success: false });
+        }
+        const userId = getNote.userId;
+        if (userId != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+        }
         const cloneNote = await saveNote.findOne({ originalNoteId: originalNoteId });
         if (cloneNote) {
             return res.status(200).json({ cloneUrl: `/v1/write-clone-file/${originalNoteId}/${cloneNote._id}`, success: true });
@@ -538,30 +524,30 @@ app.post("/v1/signup", async (req, res) => {
     const { fullname, username, email, password } = req.body;
     const { ...data } = req.body;
     if (data.username == "" || data.fullname == "" || data.email == "" || data.password == "" || data.cnfpassword == "") {
-        return res.status(400).json({ message: "Data is missing.", success: false });
+        return res.status(400).json({ message: "Hang tight! Please fill out all the required details to sign up.", success: false });
     }
     else if (data.password != data.cnfpassword) {
-        return res.status(400).json({ message: "Password not match.", success: false });
+        return res.status(400).json({ message: "Oops! Your passwords don’t match.", success: false });
     }
     else {
         try {
             const existUser = await noteUser.findOne({ username: data.username });
             if (existUser) {
-                return res.status(400).json({ message: "This username is already taken.", success: false });
+                return res.status(400).json({ message: "Looks like someone already grabbed that username.", success: false });
             } else {
                 const existEmail = await noteUser.findOne({ email: data.email });
                 if (existEmail) {
-                    return res.status(400).json({ message: "This email is already registered.", success: false });
+                    return res.status(400).json({ message: "Email already taken—try another or log in.", success: false });
                 }
             }
             const newUser = new noteUser({ fullname, username, email, password });
             const savedUser = await newUser.save();
             const token = jwt.sign({ email: savedUser.email, username: savedUser.username, id: savedUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: "24h" });
-            return res.status(200).json({ message: "Account created successfully", token, logUser: savedUser, navigateUrl: `v1/all-notes/${savedUser._id}`, success: true });
+            return res.status(200).json({ message: "You're all set! Your account has been created.", token, logUser: savedUser, navigateUrl: `v1/all-notes/${savedUser._id}`, success: true });
         }
         catch (error) {
             console.log("Signup error : ", error);
-            return res.status(500).json({ message: "Internal server error.", success: false });
+            return res.status(500).json({ message: "Oops! Something went wrong on our end.", success: false });
         }
     }
 })
@@ -570,20 +556,20 @@ app.post("/v1/signup", async (req, res) => {
 // fetch user data...
 app.get('/v1/userdata/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
-    if (id != req.user._id.toString()) {
-        return res.status(401).json({ message: "Invalid request.", success: false });
-    }
     try {
+        if (id != req.user._id.toString()) {
+            return res.status(401).json({ message: "You're not permitted for this operation.", success: false });
+        }
         const userData = await noteUser.findById(id);
         if (userData) {
             return res.status(200).json({ userData: userData, success: true });
         }
         else {
-            return res.status(404).json({ message: "No user found", success: false });
+            return res.status(404).json({ message: "Looks like that user doesn’t exist in our system.", success: false });
         }
     }
     catch (error) {
-        return res.status(500).json({ message: "Internal server error.", success: false });
+        return res.status(500).json({ message: "Oops! Something went wrong on our end.", success: false });
     }
 })
 
@@ -613,7 +599,7 @@ app.post('/v1/merge-clone/original/:id/:deleteOption?', async (req, res) => {
                 return res.status(200).json({ message: "Successfully merged with original.", navigateUrl: `/v1/all-notes/${cloneData.userId}`, success: true });
             }
             else {
-                return res.status(500).json({ message: "Unable to complete the merge. Please try again.", success: false });
+                return res.status(500).json({ message: "Couldn’t complete the merge. Please retry.", success: false });
             }
         }
     }
