@@ -24,11 +24,11 @@ export default function MergeOption(props) {
                     <p className='text-lg text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-triangle-exclamation text-4xl p-1 text-[#EBE8DB]"></i></p>
                     <p className='text-sm text-[#EBE8DB] font-para text-center p-1'> Use "Update" to update the original. "Update and Delete" also deletes the duplicate after updating.</p>
                     <div className='grid grid-cols-2 gap-3 mt-1'>
-                        <button onClick={() => mergeOriginalWithClone(true)} className={`bg-blue-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-blue-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Update & Delete</button>
-                        <button onClick={() => mergeOriginalWithClone(false)} className="bg-yellow-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-yellow-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Update only</button>
+                        <button onClick={() => mergeOriginalWithClone(true)} className={`redButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer`}>Update & Delete</button>
+                        <button onClick={() => mergeOriginalWithClone(false)} className="blueButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer">Update only</button>
                     </div>
                     <div className='justify-center mt-2 mb-2'>
-                        <button onClick={closeMergeBox} className={`border-[#EBE8DB] bg-green-400 text-[#3D0301] hover:bg-green-600 font-para text-sm border-2 rounded-sm w-full h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Cancle</button>
+                        <button onClick={closeMergeBox} className={`border-[#EBE8DB] greenButton btnColor text-[#3D0301] font-para text-sm border-2 rounded-sm w-full h-10 cursor-pointer`}>Cancle</button>
                     </div>
                 </div>
             </div>

@@ -53,13 +53,13 @@ export default function CodeBox(props) {
                                     props.codeType
                                         ?
                                         <>
-                                            <button type='submit' className='outline-2 outline-[#ebb9c3] bg-[#3773f4] font-para text-sm w-[45%] hover:bg-[#373af4] hover:outline-[#dfbac1] p-2 rounded-sm cursor-pointer text-[#EBE8DB]'>Unlock note</button>
-                                            <a href='/' className='outline-2 outline-[#ebb9c3] bg-green-500 font-para text-sm w-[45%] hover:bg-green-600 hover:outline-[#dfbac1] p-2 rounded-sm cursor-pointer text-[#EBE8DB] text-center'>Cancle</a>
+                                            <button type='submit' className='outline-2 btnColor blueButton outline-[#EBE8DB] font-para text-sm w-[45%] p-2 rounded-sm cursor-pointer text-[#EBE8DB]'>Unlock note</button>
+                                            <a href='/' className='outline-2 outline-[#EBE8DB] greenButton btnColor font-para text-sm w-[45%] p-2 rounded-sm cursor-pointer text-[#EBE8DB] text-center'>Cancle</a>
                                         </>
                                         :
                                         <>
-                                            <button type='submit' className='outline-2 outline-[#ebb9c3] bg-[#3773f4] font-para text-sm w-[45%] hover:bg-[#373af4] hover:outline-[#dfbac1] p-2 rounded-sm cursor-pointer text-[#EBE8DB]'>Share note</button>
-                                            <button type='button' onClick={handleShareBox} className='outline-2 outline-[#ebb9c3] bg-green-500 font-para text-sm w-[45%] hover:bg-green-600 hover:outline-[#dfbac1] p-2 rounded-sm cursor-pointer text-[#EBE8DB] text-center'>Cancle</button>
+                                            <button type='submit' className='outline-2 btnColor blueButton outline-[#EBE8DB] font-para text-sm w-[45%] p-2 rounded-sm cursor-pointer text-[#EBE8DB]'>Share note</button>
+                                            <button type='button' onClick={handleShareBox} className='outline-2 greenButton btnColor outline-[#EBE8DB] font-para text-sm w-[45%] p-2 rounded-sm cursor-pointer text-[#EBE8DB] text-center'>Cancle</button>
                                         </>
                                 }
                             </div>

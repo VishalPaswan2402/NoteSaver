@@ -58,7 +58,7 @@ export default function Navbar(props) {
                             ?
                             <>
                                 <div className="relative z-50 font-para text-lg w-35 mr-7">
-                                    <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-md hover:border-[#3d0301b5] hover:bg-[#3d0301b5] hover:text-[#EBE8DB] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption">
+                                    <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] whiteButton btnColor pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-sm hover:bg-[#3d0301b5] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption hover:border-[#D76C82]">
                                         <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>{userName.length > 1 ? userName.slice(0, 2).toUpperCase() : userName.toUpperCase()}</div>
                                         {
                                             userName.length > 8
@@ -72,11 +72,11 @@ export default function Navbar(props) {
                                         moreOption
                                             ?
                                             (
-                                                <ul className="absolute left-0 w-full bg-[#EBE8DB] border border-gray-300 shadow-lg shadow-[#D76C82] rounded-md mt-1">
-                                                    <li onClick={showProfile} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-user pl-1 pr-2"></i>Profile</li>
-                                                    <li onClick={navgiteAbout} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-circle-info pl-1 pr-2"></i>About</li>
-                                                    <li className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-sun pl-1 pr-2"></i>Mode</li>
-                                                    <li onClick={handleLogOut} className={`p-1 hover:bg-[#D76C82] hover:text-[#EBE8DB] cursor-pointer text-[#B03052] rounded-md`}><i className="fa-solid fa-right-from-bracket pl-1 pr-2"></i>Log Out</li>
+                                                <ul className="absolute left-0 w-full bg-[#EBE8DB] border-2 border-gray-300 shadow-lg shadow-[#D76C82] rounded-sm mt-1">
+                                                    <li onClick={showProfile} className={`p-1 pinkButton btnColor cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-solid fa-user pl-1 pr-2"></i>Profile</li>
+                                                    <li onClick={navgiteAbout} className={`p-1 pinkButton btnColor cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-solid fa-circle-info pl-1 pr-2"></i>About</li>
+                                                    <li className={`p-1 pinkButton btnColor cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-solid fa-sun pl-1 pr-2"></i>Mode</li>
+                                                    <li onClick={handleLogOut} className={`p-1 pinkButton btnColor cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-solid fa-right-from-bracket pl-1 pr-2"></i>Log Out</li>
                                                 </ul>
                                             )
                                             :
@@ -87,7 +87,7 @@ export default function Navbar(props) {
                             :
                             <a href='/'>
                                 <>
-                                    <div id='right-navbar' className='mr-7 cursor-pointer bg-[#EBE8DB] pl-4 pr-4 pt-1 pb-1 rounded-md hover:bg-[#3D0301] hover:text-white font-amarante text-[#B03052]'>Login</div>
+                                    <div id='right-navbar' className='mr-7 whiteButton btnColor w-25 cursor-pointer text-center font-para pt-1 pb-1 border-2 rounded-sm border-[#3D0301] hover:border-[#D76C82] text-lg'><i className="fa-solid fa-right-to-bracket pr-1"></i>Login</div>
                                 </>
                             </a>
                     }

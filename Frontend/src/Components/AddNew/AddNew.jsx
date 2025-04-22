@@ -79,7 +79,7 @@ export default function AddNew(props) {
                         (props.edit)
                             ?
                             (
-                                <button disabled={!formActive} type='submit' className={`border-2 rounded-sm p-1 mb-1 cursor-pointer font-para transition-all duration-200 bg-[#D76C82] text-[#EBE8DB] hover:bg-[#B03052] hover:border-[#3D0301] border-[#B03052]
+                                <button disabled={!formActive} type='submit' className={`voiletButton btnColor border-2 rounded-sm p-1 mb-1 cursor-pointer font-para transition-all duration-200 text-[#EBE8DB] hover:border-[#3D0301] border-[#B03052]
                                     ${formActive
                                         ? "cursor-pointer"
                                         : "cursor-wait"
@@ -107,22 +107,22 @@ export default function AddNew(props) {
                                     props.isArch
                                         ?
                                         (<div className='grid grid-flow-col grid-rows-1 gap-10 max-w-2xl m-auto mt-3 mb-2'>
-                                            <div onClick={() => handleDeleteOption(currNoteId.id, props.isArch)} className='border-2 bg-[#D76C82] hover:bg-[#B03052] rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-trash increaseScze cursor-pointer"></i></button></div>
+                                            <div onClick={() => handleDeleteOption(currNoteId.id, props.isArch)} className='voiletButton btnColor border-2 rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-trash increaseScze cursor-pointer"></i></button></div>
                                         </div>
                                         )
                                         :
                                         (
                                             <div className='grid grid-flow-col grid-rows-1 gap-10 max-w-2xl m-auto mt-3 mb-2'>
-                                                <Link to={`/v1/edit-page/${currNoteId.id}`} className='border-2 bg-[#D76C82] hover:bg-[#B03052] rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-pencil increaseScze cursor-pointer"></i></button></Link>
+                                                <Link to={`/v1/edit-page/${currNoteId.id}`} className='voiletButton btnColor border-2 rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-pencil increaseScze cursor-pointer"></i></button></Link>
                                                 {
                                                     props.isOriginal
                                                         ?
-                                                        <button onClick={() => copyURLtoClipboard(currNoteId.id)} className='border-2 bg-[#D76C82] hover:bg-[#B03052] rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><i className="fa-solid fa-share-nodes increaseScze cursor-pointer"></i></button>
+                                                        <button onClick={() => copyURLtoClipboard(currNoteId.id)} className='voiletButton btnColor border-2 rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><i className="fa-solid fa-share-nodes increaseScze cursor-pointer"></i></button>
                                                         :
                                                         null
                                                 }
-                                                <button onClick={printFn} className='border-2 bg-[#D76C82] hover:bg-[#B03052] rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><div><i className="fa-solid fa-print increaseScze cursor-pointer"></i></div></button>
-                                                <div onClick={() => handleDeleteOption(currNoteId.id, props.isArch)} className='border-2 bg-[#D76C82] hover:bg-[#B03052] rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-trash increaseScze cursor-pointer"></i></button></div>
+                                                <button onClick={printFn} className='voiletButton btnColor border-2 rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><div><i className="fa-solid fa-print increaseScze cursor-pointer"></i></div></button>
+                                                <div onClick={() => handleDeleteOption(currNoteId.id, props.isArch)} className='voiletButton btnColor border-2 rounded-sm p-1 mb-1 border-[#B03052] hover:border-[#3D0301] text-[#EBE8DB] cursor-pointer icon-btn'><button type='btn'><i className="fa-solid fa-trash increaseScze cursor-pointer"></i></button></div>
                                             </div>
                                         )
                                 )

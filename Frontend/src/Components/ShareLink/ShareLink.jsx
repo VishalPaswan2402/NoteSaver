@@ -52,10 +52,10 @@ export default function ShareLink(props) {
                     <p className='text-lg text-[#EBE8DB] font-para text-center'><i className="fa-solid fa-share-nodes text-4xl p-1 text-[#EBE8DB]"></i></p>
                     <p className='text-sm text-[#EBE8DB] font-para text-center'>Collaborate by sharing your notes for viewing or editing.</p>
                     <div className={`grid grid-cols-2 items-center gap-2 mt-2 mb-1`}>
-                        <button onClick={readFileURL} className={`bg-[#3773f4] border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-[#373af4] border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Read only</button>
-                        <button onClick={writeOriginalFileURL} className="bg-red-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-red-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit original</button>
-                        <button onClick={getCloneUrl} className="bg-yellow-300 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-yellow-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">Edit clone</button>
-                        <button onClick={hideShareLinkOption} className={`border-[#EBE8DB] bg-green-400 text-[#3D0301] hover:bg-green-600 font-para text-lg border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Cancle</button>
+                        <button onClick={readFileURL} className={`blueButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer`}>Read only</button>
+                        <button onClick={writeOriginalFileURL} className="redButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer">Edit original</button>
+                        <button onClick={getCloneUrl} className="yellowButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer">Edit clone</button>
+                        <button onClick={hideShareLinkOption} className={`greenButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer`}>Cancle</button>
                     </div>
                 </div>
             </div>

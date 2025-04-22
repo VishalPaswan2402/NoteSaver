@@ -48,7 +48,7 @@ export default function NoteList(props) {
     return (
         <>
             <HiddenPrintComponent />
-            <div className='bg-[#ffadbd2c] border-2 border-[#D76C82] flex max-w-200 m-auto mb-5 p-2 hover:bg-[#ffadbd69] rounded-lg hover:border-[#B03052] hover:shadow-lg hover:shadow-[#d76c8192]' style={{ transition: '0.5s' }}>
+            <div className='bg-[#ffadbd2c] border-2 border-[#D76C82] flex max-w-200 m-auto mb-5 p-2 lightPinkButton btnColor rounded-lg hover:border-[#B03052] hover:shadow-lg hover:shadow-[#d76c8192]' style={{ transition: '0.5s' }}>
                 <div className='flex w-200'>
                     <div className='w-[70%] p-1'>
                         <p className='font-semibold text-rose-900 font-para text-2xl'>{props.name.length > 30 ? props.name.slice(0, 30) + "..." : props.name}</p>

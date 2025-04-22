@@ -13,11 +13,11 @@ export default function Footer(props) {
                             Securely save, manage, and share your notes. Built with the MERN stack for productivity lovers.
                         </p>
                         <a href='mailto:vishalvp.3405@gmail.com' className="text-[17px] text-red-300 hover:text-white">Have questions or feedback?</a>
-                        <div className='social-link flex text-red-900 gap-[2px]'>
-                            <a href='https://www.linkedin.com/in/vishal-paswan-59772925b' target='_blank'><div className='bg-red-300 cursor-pointer w-8 rounded-full p-1 mt-1 text-center border-1 hover:bg-[#3D0301] hover:text-white'><i className="fa-brands fa-linkedin-in"></i></div></a>
-                            <a href='https://x.com/VishalPaswan24' target='_blank'><div className='bg-red-300 cursor-pointer w-8 rounded-full p-1 mt-1 text-center border-1 hover:bg-[#3D0301] hover:text-white'><i className="fa-brands fa-x-twitter"></i></div></a>
-                            <a href='https://github.com/VishalPaswan2402' target='_blank'><div className='bg-red-300 cursor-pointer w-8 rounded-full p-1 mt-1 text-center border-1 hover:bg-[#3D0301] hover:text-white'><i className="fa-brands fa-git"></i></div></a>
-                            <a href='https://www.instagram.com/imvishal2402' target='_blank'><div className='bg-red-300 cursor-pointer w-8 rounded-full p-1 mt-1 text-center border-1 hover:bg-[#3D0301] hover:text-white'><i className="fa-brands fa-instagram"></i></div></a>
+                        <div className='social-link flex text-red-900 gap-[5px]'>
+                            <a href='https://www.linkedin.com/in/vishal-paswan-59772925b' target='_blank'><div className='bg-red-300 cursor-pointer w-6 mt-1 text-center border-2 voiletButton btnColor'><i className="fa-brands fa-linkedin-in"></i></div></a>
+                            <a href='https://x.com/VishalPaswan24' target='_blank'><div className='bg-red-300 cursor-pointer w-6 mt-1 text-center border-2 voiletButton btnColor'><i className="fa-brands fa-x-twitter"></i></div></a>
+                            <a href='https://github.com/VishalPaswan2402' target='_blank'><div className='bg-red-300 cursor-pointer w-6 mt-1 text-center border-2 voiletButton btnColor'><i className="fa-brands fa-git"></i></div></a>
+                            <a href='https://www.instagram.com/imvishal2402' target='_blank'><div className='bg-red-300 cursor-pointer w-6 mt-1 text-center border-2 voiletButton btnColor'><i className="fa-brands fa-instagram"></i></div></a>
                         </div>
                     </div>
                     {/* Quick Links */}

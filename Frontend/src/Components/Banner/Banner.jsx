@@ -83,10 +83,10 @@ export default function Banner(props) {
                                         </>
                                     )
                         }
-                        <button disabled={!formActive} type='submit' className={`border-2 text-center text-[#EBE8DB] rounded-sm p-2 cursor-pointer hover:text-white font-para text-md
+                        <button disabled={!formActive} type='submit' className={`voiletButton btnColor border-[#B03052] hover:border-[#D76C82] border-2 text-center text-[#EBE8DB] rounded-sm p-2 cursor-pointer font-para text-md
                             ${formActive
-                                ? "bg-[#D76C82] hover:bg-[#B03052] border-[#B03052] hover:border-[#3D0301] "
-                                : "bg-[#B03052] border-[#3D0301] text-white cursor-wait"
+                                ? ""
+                                : "cursor-wait"
                             } 
                             `}>
                             {

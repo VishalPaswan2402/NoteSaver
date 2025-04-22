@@ -50,20 +50,20 @@ export default function AlertOption(props) {
                         {
                             isDelete
                                 ?
-                                <button disabled={!activeBtn} className={`bg-red-400 font-para border-[#EBE8DB] text-sm hover:bg-red-600 border-2 rounded-sm hover:border-[#EBE8DB] hover:text-[#EBE8DB] text-[#3D0301] ${isDelete ? 'w-full cursor-wait' : 'w-25 cursor-pointer'} h-10`}>{deleteText}</button>
+                                <button disabled={!activeBtn} className={`redButton btnColor bg-red-400 font-para border-[#EBE8DB] text-sm border-2 rounded-sm text-[#3D0301] ${isDelete ? 'w-full cursor-wait' : 'w-25 cursor-pointer'} h-10`}>{deleteText}</button>
                                 :
                                 isArchive
                                     ?
-                                    <button disabled={!activeBtn} className={`bg-yellow-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-yellow-600 border-2 rounded-sm hover:border-[#EBE8DB] hover:text-[#EBE8DB] ${isArchive ? 'w-full cursor-wait' : 'w-25 cursor-pointer'} h-10`}>{archiveText}</button>
+                                    <button disabled={!activeBtn} className={`yellowButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm ${isArchive ? 'w-full cursor-wait' : 'w-25 cursor-pointer'} h-10`}>{archiveText}</button>
                                     :
                                     <>
-                                        <button disabled={!activeBtn} onClick={deleteSelectedNote} className={`bg-red-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-red-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>{deleteText}</button>
-                                        <button disabled={!activeBtn} onClick={markArchiveNote} className="bg-yellow-400 border-[#EBE8DB] text-[#3D0301] font-para text-sm hover:bg-yellow-600 border-2 rounded-sm w-25 h-10 cursor-pointer hover:border-[#EBE8DB] hover:text-[#EBE8DB]">{archiveText}</button>
+                                        <button disabled={!activeBtn} onClick={deleteSelectedNote} className={`redButton btnColor border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer`}>{deleteText}</button>
+                                        <button disabled={!activeBtn} onClick={markArchiveNote} className="yellowButton btnColor  border-[#EBE8DB] text-[#3D0301] font-para text-sm border-2 rounded-sm w-25 h-10 cursor-pointer">{archiveText}</button>
                                     </>
                         }
                     </div>
                     <div className='justify-center mt-2 mb-2'>
-                        <button disabled={!activeBtn} onClick={() => handleDelete(null)} className={`border-[#EBE8DB] bg-green-400 text-[#3D0301] hover:bg-green-600 font-para text-sm border-2 rounded-sm w-full h-10 ${!activeBtn ? 'cursor-wait' : 'cursor-pointer'} hover:border-[#EBE8DB] hover:text-[#EBE8DB]`}>Cancle</button>
+                        <button disabled={!activeBtn} onClick={() => handleDelete(null)} className={`border-[#EBE8DB] greenButton btnColor text-[#3D0301] font-para text-sm border-2 rounded-sm w-full h-10 ${!activeBtn ? 'cursor-wait' : 'cursor-pointer'}`}>Cancle</button>
                     </div>
                 </div>
             </div>

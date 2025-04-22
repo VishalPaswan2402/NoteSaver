@@ -50,11 +50,11 @@ export default function FilterSearch(props) {
                         {noteType} <i className={`fa-regular fa-${noteTypeIcon}`}></i>
                     </button>
                     {isOpenType && (
-                        <ul className="absolute left-0 w-full bg-[#EBE8DB] border border-gray-300 shadow-lg shadow-[#D76C82] rounded-md mt-1">
-                            <li onClick={() => updateNoteTypeBtn("Non-Archieve", "file-lines")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Non-Archieve" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-file-lines pr-1"></i>Non-Archieve</li>
-                            <li onClick={() => updateNoteTypeBtn("All Notes", "window-restore")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "All Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-window-restore pr-1"></i>All Notes</li>
-                            <li onClick={() => updateNoteTypeBtn("Archive Notes", "trash-can")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Archive Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-trash-can pr-1"></i>Archive Notes</li>
-                            <li onClick={() => updateNoteTypeBtn("Cloned Notes", "clone")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${noteType == "Cloned Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-clone pr-1"></i>Cloned Notes</li>
+                        <ul className="absolute left-0 w-full bg-[#EBE8DB] border-2 border-gray-300 shadow-lg shadow-[#D76C82] rounded-sm mt-1">
+                            <li onClick={() => updateNoteTypeBtn("Non-Archieve", "file-lines")} className={`p-2 pinkButton btnColor ${noteType == "Non-Archieve" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-file-lines pr-1"></i>Non-Archieve</li>
+                            <li onClick={() => updateNoteTypeBtn("All Notes", "window-restore")} className={`p-2 pinkButton btnColor ${noteType == "All Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-window-restore pr-1"></i>All Notes</li>
+                            <li onClick={() => updateNoteTypeBtn("Archive Notes", "trash-can")} className={`p-2 pinkButton btnColor ${noteType == "Archive Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-trash-can pr-1"></i>Archive Notes</li>
+                            <li onClick={() => updateNoteTypeBtn("Cloned Notes", "clone")} className={`p-2 pinkButton btnColor ${noteType == "Cloned Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-clone pr-1"></i>Cloned Notes</li>
                         </ul>
                     )}
                 </div>
@@ -64,13 +64,13 @@ export default function FilterSearch(props) {
                         {filterType} <i className={`fa-regular fa-${filterTypeIcon}`}></i>
                     </button>
                     {isOpenFilter && (
-                        <ul className="absolute left-0 w-full bg-[#EBE8DB] border border-gray-300 shadow-lg shadow-[#D76C82] rounded-md mt-1">
-                            <li onClick={() => updateFilterTypeBtn("Favourite", "heart")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "Favourite" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-heart pr-1"></i>Favourite</li>
-                            <li onClick={() => updateFilterTypeBtn("Newest First", "clock")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "Newest First" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-clock pr-1"></i>Newest First</li>
-                            <li onClick={() => updateFilterTypeBtn("Oldest First", "hourglass")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "Oldest First" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-hourglass pr-1"></i>Oldest First</li>
-                            <li onClick={() => updateFilterTypeBtn("A-Z Order", "circle-up")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "A-Z Order" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-circle-up pr-1"></i>A-Z Order</li>
-                            <li onClick={() => updateFilterTypeBtn("Z-A Order", "circle-down")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "Z-A Order" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-circle-down pr-1"></i>Z-A Order</li>
-                            <li onClick={() => updateFilterTypeBtn("All Notes", "window-restore")} className={`p-2 hover:bg-[#D76C82] hover:text-[#EBE8DB] ${filterType == "All Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-md`}><i className="fa-regular fa-window-restore pr-1"></i>All Notes</li>
+                        <ul className="absolute left-0 w-full bg-[#EBE8DB] border-2 border-gray-300 shadow-lg shadow-[#D76C82] rounded-sm mt-1">
+                            <li onClick={() => updateFilterTypeBtn("Favourite", "heart")} className={`p-2 pinkButton btnColor ${filterType == "Favourite" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-heart pr-1"></i>Favourite</li>
+                            <li onClick={() => updateFilterTypeBtn("Newest First", "clock")} className={`p-2 pinkButton btnColor ${filterType == "Newest First" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-clock pr-1"></i>Newest First</li>
+                            <li onClick={() => updateFilterTypeBtn("Oldest First", "hourglass")} className={`p-2 pinkButton btnColor ${filterType == "Oldest First" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-hourglass pr-1"></i>Oldest First</li>
+                            <li onClick={() => updateFilterTypeBtn("A-Z Order", "circle-up")} className={`p-2 pinkButton btnColor ${filterType == "A-Z Order" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-circle-up pr-1"></i>A-Z Order</li>
+                            <li onClick={() => updateFilterTypeBtn("Z-A Order", "circle-down")} className={`p-2 pinkButton btnColor ${filterType == "Z-A Order" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-circle-down pr-1"></i>Z-A Order</li>
+                            <li onClick={() => updateFilterTypeBtn("All Notes", "window-restore")} className={`p-2 pinkButton btnColor ${filterType == "All Notes" ? 'hidden' : ''} cursor-pointer text-[#B03052] rounded-sm`}><i className="fa-regular fa-window-restore pr-1"></i>All Notes</li>
                         </ul>
                     )}
                 </div>

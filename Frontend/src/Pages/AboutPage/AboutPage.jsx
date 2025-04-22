@@ -13,7 +13,7 @@ export default function AboutPage(props) {
                 </div>
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                     {aboutFeatures.map((feature, index) => (
-                        <div key={index} className="bg-[#ffadbd41] hover:bg-[#ffadbd69] rounded-lg p-5 hover:shadow-lg hover:border-[#B03052] hover:shadow-[#d76c8192] transition duration-300" style={{ transition: '0.5s' }}>
+                        <div key={index} className="bg-[#ffadbd41] lightPinkButton btnColor rounded-lg p-5 hover:shadow-lg hover:border-[#B03052] hover:shadow-[#d76c8192] transition duration-300" style={{ transition: '0.5s' }}>
                             <div className="iconWrapper relative h-12 w-12 m-auto flex justify-center items-center">
                                 <span className="wave absolute rounded-full border border-[#B03052] animate-wave1"></span>
                                 <span className="wave absolute rounded-full border border-[#2d0af3] animate-wave2"></span>
