@@ -21,6 +21,8 @@ import AboutPage from './Pages/AboutPage/AboutPage';
 import ChangeEditOption from './Components/ChangeEditOption/ChangeEditOption';
 import EditClone from './Pages/EditClone/EditClone';
 import MergeOption from './Components/MergeOption/MergeOption';
+import EmailPage from './Pages/EmailPage/EmailPage';
+import NewPassword from './Pages/NewPassword/NewPassword';
 
 function App() {
   const navigate = useNavigate();
@@ -91,6 +93,8 @@ function App() {
           <Route path="/v1/edit-page/:id" element={isAuthenticated ? <EditPage /> : <Navigate to="/" />} />
           {/* <Route path="/v1/enter-share-code/:id" element={isAuthenticated ? <EnterCode /> : <Navigate to="/" />} /> */}
           <Route path="/v1/about" element={<AboutPage />} />
+          <Route path="/v1/verify-email/:id" element={<EmailPage />} />
+          <Route path="/v1/new-password/:id" element={<NewPassword />} />
           <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
         </Routes>
         <Footer />

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { loginLogoutRecover } from '../../Utility/LoginLogoutRecover';
+import axios from 'axios';
 
 export default function Banner(props) {
     const backendUrl = "http://localhost:8080";
@@ -13,9 +14,10 @@ export default function Banner(props) {
     const [account, setAccount] = useState(true);
     const [forget, setForget] = useState(false);
     const currentId = useSelector(state => state.notesaver.currentUserId);
-    const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
+    // const endPoint = forget ? '/v1/recover-password' : account ? "/v1/login" : "/v1/signup";
     const [formActive, setFormActive] = useState(true);
     const location = useLocation();
+    let endPoint = null;
 
     const {
         register,
@@ -26,7 +28,35 @@ export default function Banner(props) {
 
     const onSubmit = async (data) => {
         setFormActive(false);
-        await loginLogoutRecover(endPoint, data, dispatch, navigate, setFormActive);
+        if (forget) {
+            endPoint = '/v1/recover-password';
+            try {
+                const response = await axios.post(`${backendUrl}${endPoint}`, data, { withCredentials: true });
+                console.log(response);
+                navigate(`${response.data.navigateUrl}`, {
+                    state: {
+                        userData: response.data.recoverUser
+                    }
+                });
+            }
+            catch (error) {
+                console.log("Recover error : ", error);
+                toast.error(error.response.data.message);
+            }
+            finally {
+                setFormActive(true);
+            }
+        }
+        else {
+            if (account) {
+                endPoint = "/v1/login";
+                await loginLogoutRecover(endPoint, data, dispatch, navigate, setFormActive);
+            }
+            else {
+                endPoint = "/v1/signup";
+                await loginLogoutRecover(endPoint, data, dispatch, navigate, setFormActive);
+            }
+        }
     }
 
     const changeForm = () => {
