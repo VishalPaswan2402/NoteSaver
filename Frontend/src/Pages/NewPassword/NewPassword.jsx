@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -8,7 +8,6 @@ export default function NewPassword(props) {
     const backendUrl = "http://localhost:8080";
     const navigate = useNavigate();
     const location = useLocation();
-    const [errorMsg, setErrorMsg] = useState('');
     const [password, setPassword] = useState('');
     const [cnfPassword, setCnfPassword] = useState('');
     const userData = location.state?.userData;
@@ -17,17 +16,25 @@ export default function NewPassword(props) {
         e.preventDefault();
         try {
             const response = await axios.post(`${backendUrl}/v1/update-password/${userData._id}`, { password, cnfPassword }, { withCredentials: true });
-            toast.success(response.data.message);
-            navigate('/');
+            navigate(response.data.navigateUrl, {
+                state: {
+                    success: true,
+                    toastMessage: response.data.message
+                }
+            });
         }
         catch (error) {
             console.log("Verify error : ", error);
             if (error.response.data.navigateUrl) {
-                toast.error(error.response.data.message);
-                navigate('/');
+                navigate(error.response.data.navigateUrl, {
+                    state: {
+                        success: false,
+                        toastMessage: error.response.data.message
+                    }
+                });
             }
             else {
-                setErrorMsg(error.response.data.message)
+                toast.error(error.response.data.message);
             }
         }
     }
@@ -35,11 +42,11 @@ export default function NewPassword(props) {
     const resetFunction = () => {
         setPassword('');
         setCnfPassword('');
-        setErrorMsg('');
     }
 
     return (
         <>
+            <ToastContainer position='top-center' autoClose={2000} />
             <div className={`w-100 border-2 m-auto mt-18 mb-18 bg-white shadow-2xl shadow-[#D76C82] border-[#B03052] rounded-md`}>
                 <h1 className='text-center text-2xl font-bold font-amarante text-[#B03052] pt-3'>New Password</h1>
                 <p className='text-sm text-[#B03052] font-para text-center'>
@@ -76,13 +83,6 @@ export default function NewPassword(props) {
                             Reset Password
                         </div>
                     </div>
-                    {
-                        errorMsg
-                            ?
-                            <div className='bg-red-200 w-[80%] font-semibold text-red-600 m-auto rounded-sm text-center'>{errorMsg}</div>
-                            :
-                            null
-                    }
                 </form>
             </div>
         </>

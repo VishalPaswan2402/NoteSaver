@@ -66,7 +66,12 @@ export default function Banner(props) {
 
     useEffect(() => {
         if (location.state?.toastMessage) {
-            toast.success(location.state.toastMessage);
+            if (!location.state.success) {
+                toast.error(location.state.toastMessage);
+            }
+            else {
+                toast.success(location.state.toastMessage);
+            }
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location])

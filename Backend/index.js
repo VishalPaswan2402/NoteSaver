@@ -1059,9 +1059,10 @@ app.post("/v1/recover-password", async (req, res) => {
             const otpGen = Math.floor(100000 + Math.random() * 900000);
             console.log(otpGen);
             const userId = findUser._id;
+            const userEmail = findUser.email;
             const sendCount = 1;
             const expireTime = Date.now() + 5 * 60 * 1000;  // OTP expires in 5 minutes
-            req.session.restorePasswordData = { otpGen, userId, sendCount, expireTime };
+            req.session.storeSessionData = { otpGen, userEmail, userId, sendCount, expireTime };
             await mailSender(
                 findUser.email,
                 "NoteDrive OTP Verification",
@@ -1090,6 +1091,8 @@ app.post("/v1/recover-password", async (req, res) => {
     }
 })
 
+
+// verify otp
 app.post('/v1/verify-otp', async (req, res) => {
     const { otp } = req.body;
     if (!otp) {
@@ -1099,16 +1102,16 @@ app.post('/v1/verify-otp', async (req, res) => {
         });
     }
     try {
-        if (!req.session || !req.session.restorePasswordData) {
+        if (!req.session || !req.session.storeSessionData) {
             return res.status(400).json({
                 message: "Session expired. Please request a new OTP for verification.",
                 navigateUrl: "/",
                 success: false,
             });
         }
-        const { otpGen, userId, expireTime } = req.session.restorePasswordData;
+        const { otpGen, userId, expireTime } = req.session.storeSessionData;
         if (Date.now() > expireTime) {
-            delete req.session.restorePasswordData;
+            delete req.session.storeSessionData;
             return res.status(400).json({
                 message: "OTP expired. Please request a new OTP for verification.",
                 navigateUrl: "/",
@@ -1117,6 +1120,7 @@ app.post('/v1/verify-otp', async (req, res) => {
         }
         const userData = await noteUser.findById(userId);
         if (!userData) {
+            delete req.session.storeSessionData;
             return res.status(404).json({
                 message: "Looks like that user doesn’t exist in our system.",
                 success: false
@@ -1137,12 +1141,14 @@ app.post('/v1/verify-otp', async (req, res) => {
     catch (error) {
         console.log("Verify error : ", error);
         return res.status(500).json({
-            message: "Hmm… something broke during the verification. Try once more.",
+            message: "Hmm… something broke during the verification. Try again later.",
             success: false
         });
     }
 })
 
+
+// update password
 app.post('/v1/update-password/:id', async (req, res) => {
     const { id } = req.params;
     const { password, cnfPassword } = req.body;
@@ -1154,16 +1160,16 @@ app.post('/v1/update-password/:id', async (req, res) => {
     }
     try {
         // operation
-        if (!req.session || !req.session.restorePasswordData) {
+        if (!req.session || !req.session.storeSessionData) {
             return res.status(400).json({
                 message: "Session expired. Please try again later.",
                 navigateUrl: "/",
                 success: false,
             });
         }
-        const { otpGen, userId, expireTime } = req.session.restorePasswordData;
+        const { otpGen, userId, expireTime } = req.session.storeSessionData;
         if (Date.now() > expireTime) {
-            delete req.session.restorePasswordData;
+            delete req.session.storeSessionData;
             return res.status(400).json({
                 message: "Session expired. Please try again later.",
                 navigateUrl: "/",
@@ -1172,6 +1178,7 @@ app.post('/v1/update-password/:id', async (req, res) => {
         }
         const findUser = await noteUser.findById(userId);
         if (!findUser) {
+            delete req.session.storeSessionData;
             return res.status(404).json({
                 message: "Looks like that user doesn’t exist in our system.",
                 success: false
@@ -1186,7 +1193,7 @@ app.post('/v1/update-password/:id', async (req, res) => {
         const updatePassword = await noteUser.findByIdAndUpdate(userId, {
             password: password
         });
-        delete req.session.restorePasswordData;
+        delete req.session.storeSessionData;
         res.status(200).json({
             message: "Password updated successfully. You can login with new password.",
             navigateUrl: '/',
@@ -1196,13 +1203,61 @@ app.post('/v1/update-password/:id', async (req, res) => {
     catch (error) {
         console.log("Update password error : ", error);
         return res.status(500).json({
-            message: "Hmm… something broke during the updation. Try once more.",
+            message: "Hmm… something broke during the updation. Try again later.",
             success: false
         });
     }
 })
 
 
+// resend otp
+app.get("/v1/resend-otp/:id", async (req, res) => {
+    console.log("Resending otp...");
+    const { id } = req.params;
+    try {
+        if (!req.session || !req.session.storeSessionData) {
+            return res.status(400).json({
+                message: "Session expired. Please try again later.",
+                navigateUrl: "/",
+                success: false,
+            });
+        }
+        const { userEmail, sendCount } = req.session.storeSessionData;
+        if (sendCount == 3) {
+            delete req.session.storeSessionData;
+            return res.status(400).json({
+                message: "Resend limit reached. Please check your email or try again shortly.",
+                navigateUrl: '/',
+                success: false
+            })
+        }
+        let newOtp = Math.floor(100000 + Math.random() * 900000);
+        console.log("New otp", newOtp);
+        req.session.storeSessionData.otpGen = newOtp;
+        req.session.storeSessionData.expireTime = Date.now() + 5 * 60 * 1000;
+        req.session.storeSessionData.sendCount = sendCount + 1;
+        await mailSender(
+            userEmail,
+            "NoteDrive OTP Verification",
+            '',
+            `<h1>Your OTP is <b>${newOtp}</b></h1>`
+        );
+        return res.status(200).json({
+            message: "A new OTP has been sent to your email",
+            success: true
+        });
+    }
+    catch (error) {
+        console.log("Resend otp error", error);
+        return res.status(500).json({
+            message: "Hmm… something broke during the updation. Try again later.",
+            success: false
+        });
+    }
+})
+
+
+// start server...
 app.listen(port, () => {
     console.log("Running on port", port);
 })
