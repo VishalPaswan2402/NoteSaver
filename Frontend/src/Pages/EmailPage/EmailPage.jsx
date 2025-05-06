@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { verifyOtp } from '../../Utility/VerifyOtp';
+import { resendOtpToMail } from '../../Utility/ResendOtp';
 
 export default function EmailPage(props) {
     const backendUrl = "http://localhost:8080";
@@ -12,50 +14,11 @@ export default function EmailPage(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(`${backendUrl}/v1/verify-otp`, { otp }, { withCredentials: true });
-            navigate(response.data.navigateUrl, {
-                state: {
-                    success: true,
-                    userData: userData
-                }
-            });
-        }
-        catch (error) {
-            console.log("Verify error : ", error);
-            if (error.response.data.navigateUrl) {
-                navigate(error.response.data.navigateUrl, {
-                    state: {
-                        success: false,
-                        toastMessage: error.response.data.message
-                    }
-                });
-            }
-            else {
-                toast.error(error.response.data.message);
-            }
-        }
+        await verifyOtp(otp, navigate, userData);
     }
 
     const resendOtp = async () => {
-        try {
-            const response = await axios.get(`${backendUrl}/v1/resend-otp/${userData._id}`, { withCredentials: true });
-            toast.success(response.data.message);
-        }
-        catch (error) {
-            console.log(error);
-            if (error.response.data.navigateUrl) {
-                navigate(error.response.data.navigateUrl, {
-                    state: {
-                        success: false,
-                        toastMessage: error.response.data.message
-                    }
-                });
-            }
-            else {
-                toast.error(error.response.data.message);
-            }
-        }
+        await resendOtpToMail(userData._id, navigate);
     }
 
     return (

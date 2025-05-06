@@ -21,14 +21,12 @@ export const codeSetupVerify = async (endPointUrl, data, setErrorMsg, dispatch, 
                 toast.success(response.data.message);
                 dispatch(setAnyChangeHappen());
             }
+            dispatch(setDisplayCodeBox(false));
         }
     }
     catch (error) {
         const errorMsg = error?.response?.data?.message || "Something went wrong. Please try again.";
         setErrorMsg(errorMsg);
         console.log("Something went wrong.", error);
-    }
-    finally {
-        dispatch(setDisplayCodeBox(false));
     }
 }

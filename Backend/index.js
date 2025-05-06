@@ -265,12 +265,7 @@ app.delete('/v1/delete-note/:id', isAuthenticated, async (req, res) => {
             });
         }
         else {
-            const removeId = findNote.originalNoteId;
-            const deleteOriginal = await saveNote.findByIdAndDelete(findNote.originalNoteId);
             const delteteClone = await saveNote.findByIdAndDelete(id);
-            const removeReference = await noteUser.findByIdAndUpdate(delteteClone.userId, {
-                $pull: { allNotes: removeId }
-            });
             return res.status(200).json({
                 message: "Done! Your note has been deleted.",
                 navigateUrl: `/v1/all-notes/${delteteClone.userId}`,
@@ -444,6 +439,12 @@ app.post("/v1/share-original/:noteId", isAuthenticated, async (req, res) => {
 app.post('/v1/set-original-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
+    if (!data.secretKey) {
+        return res.status(400).json({
+            message: "Please enter secret key.",
+            success: false
+        })
+    }
     try {
         const getNote = await saveNote.findById(noteId);
         if (!getNote) {
@@ -662,6 +663,12 @@ app.post("/v1/share-clone/:noteId", isAuthenticated, async (req, res) => {
 app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, async (req, res) => {
     const { noteId } = req.params;
     const { ...data } = req.body;
+    if (!data.secretKey) {
+        return res.status(400).json({
+            message: "Please enter secret key.",
+            success: false
+        })
+    }
     try {
         const getNote = await saveNote.findById(noteId);
         if (!getNote) {
@@ -1095,6 +1102,7 @@ app.post("/v1/recover-password", async (req, res) => {
 // verify otp
 app.post('/v1/verify-otp', async (req, res) => {
     const { otp } = req.body;
+    console.log(otp);
     if (!otp) {
         return res.status(400).json({
             message: "Hold on! We need OTP to verify your account.",

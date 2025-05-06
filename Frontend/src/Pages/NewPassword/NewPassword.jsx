@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { newPassword } from '../../Utility/NewPassword';
 
 export default function NewPassword(props) {
     const backendUrl = "http://localhost:8080";
@@ -14,29 +15,7 @@ export default function NewPassword(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(`${backendUrl}/v1/update-password/${userData._id}`, { password, cnfPassword }, { withCredentials: true });
-            navigate(response.data.navigateUrl, {
-                state: {
-                    success: true,
-                    toastMessage: response.data.message
-                }
-            });
-        }
-        catch (error) {
-            console.log("Verify error : ", error);
-            if (error.response.data.navigateUrl) {
-                navigate(error.response.data.navigateUrl, {
-                    state: {
-                        success: false,
-                        toastMessage: error.response.data.message
-                    }
-                });
-            }
-            else {
-                toast.error(error.response.data.message);
-            }
-        }
+        await newPassword(userData._id, password, cnfPassword, navigate);
     }
 
     const resetFunction = () => {
