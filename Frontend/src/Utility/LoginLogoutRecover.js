@@ -8,10 +8,15 @@ export const loginLogoutRecover = async (endPoint, data, dispatch, navigate, set
     try {
         const response = await axios.post(`${backendUrl}${endPoint}`, data, { withCredentials: true });
         if (response.data.success == true) {
-            dispatch(setCurrentUserId(response.data.logUser._id));
-            localStorage.setItem("token", response.data.token);
+            if (response.data.logUser) {
+                dispatch(setCurrentUserId(response.data.logUser._id));
+                localStorage.setItem("token", response.data.token);
+            }
             navigate(`${response.data.navigateUrl}`, {
-                state: { toastMessage: response.data.message },
+                state: {
+                    toastMessage: response.data.message,
+                    userData: response.data.userEmail
+                },
             });
         }
         else {

@@ -23,6 +23,7 @@ import EditClone from './Pages/EditClone/EditClone';
 import MergeOption from './Components/MergeOption/MergeOption';
 import EmailPage from './Pages/EmailPage/EmailPage';
 import NewPassword from './Pages/NewPassword/NewPassword';
+import SignupVerifyPage from './Pages/SignupVerify/SignupVerify';
 
 function App() {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ function App() {
           <Route path="/v1/about" element={<AboutPage />} />
           <Route path="/v1/verify-email/:id" element={<EmailPage />} />
           <Route path="/v1/new-password/:id" element={<NewPassword />} />
+          <Route path="/v1/signup-verify/:time" element={<SignupVerifyPage />} />
           <Route path="*" element={isAuthenticated ? <Navigate to={`/v1/all-notes/${currentId}`} /> : <Navigate to="/" />} />
         </Routes>
         <Footer />
