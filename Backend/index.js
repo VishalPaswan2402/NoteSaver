@@ -302,7 +302,6 @@ app.post('/v1/mark-important/:id', isAuthenticated, async (req, res) => {
                 success: false
             });
         }
-        // const findNote = await saveNote.findById(id);
         if (findNote.isArchive) {
             return res.status(500).json({
                 message: "Uh-oh! Please restore your note.",
@@ -584,19 +583,27 @@ app.post('/v1/update-original-shared/:noteId', isAuthenticated, async (req, res)
     try {
         const findNote = await saveNote.findById(noteId);
         if (findNote) {
-            const updateNote = await saveNote.findByIdAndUpdate(noteId, {
-                title: data.title,
-                description: data.description
-            });
-            res.status(200).json({
-                message: "Great! The original note is now updated.",
-                success: true,
-                navigateUrl: '/'
-            });
+            if (findNote.isEditable) {
+                const updateNote = await saveNote.findByIdAndUpdate(noteId, {
+                    title: data.title,
+                    description: data.description
+                });
+                res.status(200).json({
+                    message: "Great! The original note is now updated.",
+                    success: true,
+                    navigateUrl: '/'
+                });
+            }
+            else {
+                return res.status(404).json({
+                    message: "Sorry, editing isn’t allowed for this note.",
+                    success: false
+                });
+            }
         }
         else {
-            return res.status(404).json({
-                message: "Sorry, editing isn’t allowed for this note.",
+            return res.status(500).json({
+                message: "Hmm... we couldn’t find that note.",
                 success: false
             });
         }
@@ -834,7 +841,7 @@ app.post('/v1/update-clone-shared/:cloneId', isAuthenticated, async (req, res) =
         }
         else {
             return res.status(404).json({
-                message: "Sorry, editing isn’t allowed for this note.",
+                message: "Sorry, the clone isn’t available right now.",
                 success: false
             });
         }
@@ -1227,7 +1234,6 @@ app.post('/v1/update-password/:id', async (req, res) => {
         });
     }
     try {
-        // operation
         if (!req.session || !req.session.storeSessionData) {
             return res.status(400).json({
                 message: "Session expired. Please try again later.",
