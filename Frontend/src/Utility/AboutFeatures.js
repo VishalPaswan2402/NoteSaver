@@ -1,6 +1,6 @@
 export const aboutFeatures = [
     {
-        title: "Voice to Text",
+        title: "Voice to Text (Coming Soon!)",
         icon: 'fa-solid fa-microphone',
         description: "Use voice input to create notes hands-free. The built-in speech recognition converts spoken words into text, making note-taking faster and more accessible."
     },

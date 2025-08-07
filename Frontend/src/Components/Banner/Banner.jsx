@@ -63,14 +63,15 @@ export default function Banner(props) {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center" />
+            <ToastContainer autoClose={2000} toastClassName="md:!w-80 lg:!w-80 !w-70 sm:!w-80 !h-15 mt-2" position="top-center" />
+            <h1 className='lg:hidden font-extrabold text-4xl text-center pt-3 text-[#B03052] font-amarante'>NoteDrive</h1>
             <div className='bg-[#EBE8DB] banner-container flex items-center justify-evenly'>
-                <div className='w-[50%] flex items-center justify-center'>
+                <div className='w-[50%] lg:flex hidden items-center justify-center'>
                     <img className='h-143 w-full' src={image.book}></img>
                 </div>
 
-                <div className='w-[50%] flex justify-center'>
-                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 gap-4 w-1/2 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-5 rounded-md shadow-2xl shadow-[#D76C82]'>
+                <div className='w-[100%] mt-4 mb-2 lg:w-[50%] flex justify-center'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='bg-white grid grid-rows-1 md:w-100 sm:80 gap-4 w-81 lg:w-100 border-2 border-[#B03052] pt-5 pl-10 pr-10 pb-5 rounded-md shadow-2xl shadow-[#D76C82]'>
                         <h1 className='text-center text-2xl font-bold font-amarante text-[#B03052]'>
                             {
                                 forget

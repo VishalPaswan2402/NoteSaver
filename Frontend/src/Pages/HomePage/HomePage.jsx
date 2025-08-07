@@ -60,7 +60,7 @@ export default function HomePage(props) {
 
     return (
         <>
-            <ToastContainer position='top-center' autoClose={2000} />
+            <ToastContainer position='top-center' toastClassName="md:!w-80 lg:!w-80 !w-70 sm:!w-80 !h-15 mt-2" autoClose={2000} />
             <h1 className='font-extrabold text-4xl text-center pt-3 text-[#B03052] font-amarante'>Your Organized Notes</h1>
             {
                 notes.length > 0 ? <FilterSearch /> : null

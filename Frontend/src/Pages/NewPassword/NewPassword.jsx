@@ -25,7 +25,7 @@ export default function NewPassword(props) {
 
     return (
         <>
-            <ToastContainer position='top-center' autoClose={2000} />
+            <ToastContainer position='top-center' toastClassName="md:!w-80 lg:!w-80 !w-70 sm:!w-80 !h-15 mt-2" autoClose={2000} />
             <div className={`w-100 border-2 m-auto mt-18 mb-18 bg-white shadow-2xl shadow-[#D76C82] border-[#B03052] rounded-md`}>
                 <h1 className='text-center text-2xl font-bold font-amarante text-[#B03052] pt-3'>New Password</h1>
                 <p className='text-sm text-[#B03052] font-para text-center'>

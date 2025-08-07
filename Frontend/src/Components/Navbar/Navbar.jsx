@@ -35,7 +35,7 @@ export default function Navbar(props) {
         <>
             <div id='navbar' className='flex place-content-between p-2 bg-[#B03052] z-100 fixed t-0 w-screen'>
                 <div id='left-navbar'>
-                    <div id='left-option' className='flex pl-6 gap-3 pt-1'>
+                    <div id='left-option' className='flex pl-2 gap-3 pt-1'>
                         <div className="site-logo logo-style" style={{ backgroundImage: `url(${image.logo})` }} ></div>
                         {
                             isAuthenticated
@@ -57,16 +57,18 @@ export default function Navbar(props) {
                         isAuthenticated
                             ?
                             <>
-                                <div className="relative z-50 font-para text-lg w-35 mr-7">
-                                    <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] whiteButton btnColor pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-sm hover:bg-[#3d0301b5] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption hover:border-[#D76C82]">
-                                        <div className='h-7 w-7 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>{userName.length > 1 ? userName.slice(0, 2).toUpperCase() : userName.toUpperCase()}</div>
-                                        {
+                                <div className="relative z-50 font-para text-lg md:w-35 sm:w-35 w-15 lg:w-35 mr-7">
+                                    <button onClick={() => setMoreOption(!moreOption)} className="bg-[#EBE8DB] whiteButton btnColor pl-2 pr-2 pt-1 pb-1 w-full border-2 h-full rounded-sm hover:bg-[#3d0301b5] border-[#b05668] text-[#B03052] cursor-pointer flex gap-2 items-center moreOption hover:border-[#D76C82]">
+                                        <div className='h-7 w-7 ml-1 rounded-full text-[#EBE8DB] bg-[#D76C82] text-center moreOptionIcon'>{userName.length > 1 ? userName.slice(0, 2).toUpperCase() : userName.toUpperCase()}</div>
+                                        <div className='lg:flex sm:flex md:flex hidden'>
+                                            {
                                             userName.length > 8
                                                 ?
                                                 <>{userName.slice(0, 9)}...</>
                                                 :
                                                 userName
                                         }
+                                        </div>
                                     </button>
                                     {
                                         moreOption

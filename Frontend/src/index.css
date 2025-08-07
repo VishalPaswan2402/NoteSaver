@@ -157,7 +157,9 @@
     position: relative;
     transition: 0.3s ease all;
     z-index: 1;
-    background-color: #EBE8DB;
+    background-color: #f4dce1;
+    /* background-color: #EBE8DB; */
+    /* bg-[#D76C82] */
     color: #3D0301;
 }
 
