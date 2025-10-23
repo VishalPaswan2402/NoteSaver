@@ -68,6 +68,7 @@ NoteSaver/
 ├── README.md              # Project documentation
 └── package.json           # Root dependencies & scripts (for both backend & frontend)
 
+```
 
 ## Website images
 
