@@ -4,39 +4,14 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import passport from './middlewares/passport.js';
-import isAuthenticated from './middlewares/authenticated.js';
-import { mailSender } from './middlewares/mailSender.js';
 import session from "express-session";
 import MongoStore from 'connect-mongo';
-import addNewNote from './Controllers/noteController/addNewNote.js'
-
-import editNote from './Controllers/noteController/editNote.js';
-import getAllNotes from './Controllers/noteViewController/getAllNotes.js';
-import viewNote from './Controllers/noteViewController/viewNote.js';
-import deleteNote from './Controllers/noteController/deleteNote.js';
-import markAsImportant from './Controllers/noteMarkController/markAsImportant.js';
-import shareOriginal from './Controllers/originalController/shareOriginal.js';
-import originalShareCode from './Controllers/originalController/originalShareCode.js';
-import noteShareFalse from './Controllers/originalController/noteShareFalse.js';
-import verifyOriginalShareCode from './Controllers/originalController/verifyOriginalShareCode.js';
-import updateOriginal from './Controllers/originalController/updateOriginal.js';
-import createClone from './Controllers/cloneController/createClone.js';
-import setCloneCode from './Controllers/cloneController/setCloneCode.js';
-import shareCloneUrl from './Controllers/cloneController/shareCloneUrl.js';
-import verifyCloneCode from './Controllers/cloneController/verifyCloneCode.js';
-import updateClone from './Controllers/cloneController/updateCLone.js';
-import login from './Controllers/userController/login.js';
-import signup from './Controllers/userController/signup.js';
-import verifyUser from './Controllers/userController/verifyUser.js';
-import userData from './Controllers/userController/userData.js';
-import mergeClone from './Controllers/cloneController/mergeClone.js';
-import recoverPassword from './Controllers/passwordController/recoverPassword.js';
-import updatePassword from './Controllers/passwordController/updatePassword.js';
-import markArchive from './Controllers/noteMarkController/markArchive.js';
-import resendOtp from './Controllers/otpController/resendOtp.js';
-import verifyOtp from './Controllers/otpController/verifyOtp.js';
+import notesRouter from './Router/notesRouter.js';
+import notesMarkRouter from './Router/notesMarkRouter.js';
+import cloneRouter from './Router/cloneRouter.js';
+import loginSignup from './Router/loginSignup.js';
+import shareOriginalRouter from './Router/shareOriginalRouter.js';
 const app = express();
-
 dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -98,82 +73,82 @@ app.get("/", async (req, res) => {
 })
 
 // add new note
-app.post("/v1/new-note/:id", isAuthenticated, addNewNote)
+app.use("/v1/new-note", notesRouter)
 
 // edit note
-app.post("/v1/edit-note/:id", isAuthenticated, editNote)
+app.use("/v1/edit-note", notesRouter)
 
 // show all notes
-app.get("/v1/all-notes/:id", isAuthenticated, getAllNotes)
+app.use("/v1/all-notes", notesRouter)
 
 // view note
-app.get("/v1/view-note/:id", viewNote)
+app.use("/v1/view-note", notesRouter)
 
 // delete note
-app.delete('/v1/delete-note/:id', isAuthenticated, deleteNote)
+app.use('/v1/delete-note', notesRouter)
 
 // mark as important
-app.post('/v1/mark-important/:id', isAuthenticated, markAsImportant)
+app.use('/v1/mark-important', notesMarkRouter)
 
 // mark archive...
-app.post("/v1/mark-archive/:id", isAuthenticated, markArchive)
+app.use("/v1/mark-archive", notesMarkRouter)
 
 // share original note to edit...
-app.post("/v1/share-original/:noteId", isAuthenticated, shareOriginal);
+app.use("/v1/share-original", shareOriginalRouter);
 
 // set share original code for note...
-app.post('/v1/set-original-share-code/:noteId', isAuthenticated, originalShareCode)
+app.use('/v1/set-original-share-code', shareOriginalRouter)
 
 // change share original to edit...
-app.post('/v1/set-note-share-false/:noteId', isAuthenticated, noteShareFalse)
+app.use('/v1/set-note-share-false', shareOriginalRouter)
 
 // compare original share code...
-app.post('/v1/verify-original-share-code/:noteId', isAuthenticated, verifyOriginalShareCode)
+app.use('/v1/verify-original-share-code', shareOriginalRouter)
 
 // updade original shared data...
-app.post('/v1/update-original-shared/:noteId', isAuthenticated, updateOriginal)
+app.use('/v1/update-original-shared', shareOriginalRouter)
 
 // create clone to share...
-app.post("/v1/share-clone/:noteId", isAuthenticated, createClone);
+app.use("/v1/share-clone", cloneRouter);
 
 // set share clone code for note...
-app.post('/v1/set-clone-share-code/:noteId', isAuthenticated, setCloneCode)
+app.use('/v1/set-clone-share-code', cloneRouter)
 
 // fetch clone url to share...
-app.get('/v1/share-clone-url/:originalNoteId', isAuthenticated, shareCloneUrl)
+app.use('/v1/share-clone-url', cloneRouter)
 
 // compare clone share code...
-app.post('/v1/verify-clone-share-code/:cloneId', isAuthenticated, verifyCloneCode)
+app.use('/v1/verify-clone-share-code', cloneRouter)
 
 // updade clone shared data...
-app.post('/v1/update-clone-shared/:cloneId', isAuthenticated, updateClone)
+app.use('/v1/update-clone-shared', cloneRouter)
 
 // login 
-app.post("/v1/login", login)
+app.use("/v1", loginSignup)
 
 // signup
-app.post("/v1/signup", signup)
+app.use("/v1", loginSignup)
 
 // verify new user otp...
-app.post('/v1/verify-newUser/otp', verifyUser)
+app.use('/v1/verify-newUser', loginSignup)
 
 // fetch user data...
-app.get('/v1/userdata/:id', isAuthenticated, userData)
+app.use('/v1/userdata', loginSignup)
 
 // merge clone with original...
-app.post('/v1/merge-clone/original/:id/:deleteOption?', mergeClone)
+app.use('/v1/merge-clone/original', cloneRouter)
 
 // recover password
-app.post("/v1/recover-password", recoverPassword)
+app.use("/v1", loginSignup)
 
 // verify otp
-app.post('/v1/verify-otp', verifyOtp)
+app.use('/v1', loginSignup)
 
 // update password
-app.post('/v1/update-password/:id', updatePassword)
+app.use('/v1/update-password', loginSignup)
 
 // resend otp
-app.get("/v1/resend-otp/:id", resendOtp)
+app.use("/v1/resend-otp", loginSignup)
 
 // start server...
 app.listen(port, () => {
