@@ -43,29 +43,30 @@ Built with **MongoDB, Express.js, React.js, and Node.js**, the app provides seam
 
 ## 🖥️ Project Structure
 
+```bash
 NoteSaver/
-│
 ├── backend/
-│ ├── Controllers/
-│ ├── Models/
-│ ├── Routes/
-│ ├── config/
-│ ├── app.js
-│ └── server.js
+│   ├── Controllers/       # Handles business logic (add/edit/delete notes, auth, etc.)
+│   ├── Models/            # Mongoose schemas and data models
+│   ├── Routes/            # Express route definitions
+│   ├── config/            # Database and environment configurations
+│   ├── app.js             # Express app setup (middlewares, routes, etc.)
+│   └── server.js          # Entry point for backend (starts the server)
 │
 ├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── hooks/
-│ │ ├── pages/
-│ │ ├── services/
-│ │ └── App.jsx
-│ ├── package.json
-│ └── tailwind.config.js
+│   ├── src/
+│   │   ├── components/    # Reusable UI components (Navbar, Button, etc.)
+│   │   ├── hooks/         # Custom React hooks (e.g. usePrintNote)
+│   │   ├── pages/         # Main pages (Home, Dashboard, Login, Signup, etc.)
+│   │   ├── services/      # API call functions and utility services
+│   │   └── App.jsx        # Root React component
+│   │
+│   ├── package.json       # Frontend dependencies and scripts
+│   └── tailwind.config.js # Tailwind CSS configuration
 │
-├── .env
-├── README.md
-└── package.json
+├── .env                   # Environment variables
+├── README.md              # Project documentation
+└── package.json           # Root dependencies & scripts (for both backend & frontend)
 
 
 ## Website images
